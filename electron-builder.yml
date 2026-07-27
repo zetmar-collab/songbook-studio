@@ -30,7 +30,8 @@ win:
     - target: portable
       arch:
         - x64
-  artifactName: ${productName}-${version}-${arch}.${ext}
+  # Bez spacji — inaczej GitHub zamienia spacje na kropki i psuje auto-aktualizacje
+  artifactName: Songbook-Studio-${version}-${arch}.${ext}
 
 nsis:
   oneClick: false
@@ -42,7 +43,7 @@ nsis:
   shortcutName: Songbook Studio
 
 portable:
-  artifactName: ${productName}-${version}-portable.${ext}
+  artifactName: Songbook-Studio-${version}-portable.${ext}
 
 # Serwer aktualizacji (electron-updater) — GitHub Releases.
 # Publikacja wydania:  npx electron-builder --win --publish always  (wymaga GH_TOKEN)
