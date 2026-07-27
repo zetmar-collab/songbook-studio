@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Song } from '../../preload/index.d'
 import Sidebar from './components/Sidebar'
@@ -13,6 +13,7 @@ export default function App(): JSX.Element {
   const [query, setQuery] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [toast, setToast] = useState<ToastState | null>(null)
+  const didAutoSelect = useRef(false)
 
   const showToast = useCallback((t: ToastState) => {
     setToast(t)
@@ -46,6 +47,14 @@ export default function App(): JSX.Element {
   useEffect(() => {
     refresh(query)
   }, [query, refresh])
+
+  // Po pierwszym załadowaniu automatycznie zaznacz pierwszy utwór
+  useEffect(() => {
+    if (!didAutoSelect.current && selectedId === null && songs.length > 0) {
+      didAutoSelect.current = true
+      setSelectedId(songs[0].id)
+    }
+  }, [songs, selectedId])
 
   const selected = songs.find((s) => s.id === selectedId) ?? null
 

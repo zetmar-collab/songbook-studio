@@ -4,6 +4,12 @@ Desktopowa aplikacja (Windows `.exe`) do organizowania **tekstów piosenek, akor
 
 Zbudowana w **Electron + React + TypeScript + SQLite**.
 
+## Zrzuty ekranu
+
+| Motyw jasny | Motyw ciemny |
+|:---:|:---:|
+| ![Songbook Studio — motyw jasny](docs/screenshots/main-light.png) | ![Songbook Studio — motyw ciemny](docs/screenshots/main-dark.png) |
+
 ## Funkcje
 
 - 📚 **Katalog utworów** — tytuł, wykonawca, tonacja, tagi, ulubione
@@ -154,3 +160,7 @@ development with C++") i wtedy zwykłe `npm install` skompiluje moduł samodziel
 - Renderer komunikuje się z systemem tylko przez zdefiniowane kanały IPC
 - Ścisła Content-Security-Policy w `index.html`
 - Zewnętrzne linki otwierane w domyślnej przeglądarce, nie w oknie aplikacji
+
+## Licencja
+
+[MIT](LICENSE) © 2026 Marek
