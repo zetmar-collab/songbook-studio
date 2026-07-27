@@ -4,6 +4,8 @@
 [![Platforma](https://img.shields.io/badge/platforma-Windows%20x64-0078D6?style=flat-square)](https://github.com/zetmar-collab/songbook-studio/releases/latest)
 [![Licencja](https://img.shields.io/github/license/zetmar-collab/songbook-studio?style=flat-square)](LICENSE)
 
+**🇵🇱 Polski** · **[🇬🇧 English](#-songbook-studio--english)**
+
 Desktopowa aplikacja (Windows `.exe`) do organizowania **tekstów piosenek, akordów i pomysłów na utwory**. Działa **offline**, z opcjonalnym generowaniem akordów przez AI.
 
 Zbudowana w **Electron + React + TypeScript + SQLite**.
@@ -177,5 +179,61 @@ development with C++") i wtedy zwykłe `npm install` skompiluje moduł samodziel
 - Zewnętrzne linki otwierane w domyślnej przeglądarce, nie w oknie aplikacji
 
 ## Licencja
+
+[MIT](LICENSE) © 2026 Marek
+
+---
+
+# 🎵 Songbook Studio — English
+
+**[🇵🇱 Polski](#-songbook-studio)** · **🇬🇧 English**
+
+A desktop app (Windows `.exe`) for organizing **song lyrics, chords and songwriting ideas**. Works **offline**, with optional AI chord generation.
+
+Built with **Electron + React + TypeScript + SQLite**.
+
+## 📥 Installation (for users)
+
+1. Go to the **[latest release](https://github.com/zetmar-collab/songbook-studio/releases/latest)**.
+2. Under **Assets**, download one of:
+   - **`Songbook-Studio-1.0.0-x64.exe`** — installer (recommended: Start‑menu & desktop shortcuts, automatic updates), **or**
+   - **`Songbook-Studio-1.0.0-portable.exe`** — portable, runs without installation (e.g. from a USB stick).
+3. Run the downloaded file. On first launch Windows SmartScreen may show a warning (the app isn't code‑signed) — click **"More info" → "Run anyway"**.
+4. Done! The app works offline. To use AI chord generation, paste an API key in **⚙️ Settings** (OpenRouter or Gemini) — it is stored locally only.
+
+## ✨ Features
+
+- 📚 **Song catalog** — title, artist, key, tags, favorites
+- 🕘 **Lyrics versioning** — save snapshots and restore earlier versions
+- 🎙 **Voice notes** — record melody ideas right in the app
+- ✨ **AI chord generation** — OpenRouter or Google Gemini
+- 🆓 **Free OpenRouter models** — auto-fetched (with context limits) once you paste an API key
+- 🎚 **Chord transposition** — ♭−1 / ♯+1 transposes bracketed `[ ]` chords and the key
+- 📥 **Import from Word (.docx)** — load existing lyrics as a new song
+- 📄 **Export to PDF, DOCX and Markdown** (single song)
+- 📖 **Bulk export** — the whole songbook into one PDF/DOCX/MD (cover + table of contents)
+- ⬆ **Automatic updates** (electron-updater)
+- 🔍 **Full-text search** (SQLite FTS5), diacritics-insensitive
+- 💾 **Database backups** — manual (create / restore, custom folder) and automatic on close
+- 🌗 **Light / dark / system theme** · 🌍 **Polish / English UI**
+
+## Build from source
+
+```bash
+npm install
+npm run dev        # development
+npm run dist       # build the Windows installer (output in dist/)
+```
+
+> If `npm install` fails on the native `better-sqlite3` module (no C++ toolchain),
+> see the Polish *Rozwiązywanie problemów* section above for the prebuilt-binary workaround.
+
+## Where is data stored?
+
+Everything is local, in the app data directory (`%APPDATA%\songbook-studio\` on Windows):
+the SQLite database (songs, versions, settings) and voice-note `.webm` files. API keys never
+leave your computer except when calling your chosen AI provider.
+
+## License
 
 [MIT](LICENSE) © 2026 Marek
