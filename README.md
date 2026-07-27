@@ -1,8 +1,23 @@
 # 🎵 Songbook Studio
 
+[![Wydanie](https://img.shields.io/github/v/release/zetmar-collab/songbook-studio?label=pobierz&style=flat-square)](https://github.com/zetmar-collab/songbook-studio/releases/latest)
+[![Platforma](https://img.shields.io/badge/platforma-Windows%20x64-0078D6?style=flat-square)](https://github.com/zetmar-collab/songbook-studio/releases/latest)
+[![Licencja](https://img.shields.io/github/license/zetmar-collab/songbook-studio?style=flat-square)](LICENSE)
+
 Desktopowa aplikacja (Windows `.exe`) do organizowania **tekstów piosenek, akordów i pomysłów na utwory**. Działa **offline**, z opcjonalnym generowaniem akordów przez AI.
 
 Zbudowana w **Electron + React + TypeScript + SQLite**.
+
+## 📥 Instalacja (dla użytkowników)
+
+1. Przejdź do **[najnowszego wydania](https://github.com/zetmar-collab/songbook-studio/releases/latest)**.
+2. Pobierz plik z sekcji **Assets**:
+   - **`Songbook-Studio-1.0.0-x64.exe`** — instalator (zalecane: skróty w menu Start i na pulpicie, automatyczne aktualizacje), **lub**
+   - **`Songbook-Studio-1.0.0-portable.exe`** — wersja przenośna, uruchamiana bez instalacji (np. z pendrive'a).
+3. Uruchom pobrany plik. Przy pierwszym starcie Windows SmartScreen może pokazać ostrzeżenie (aplikacja nie jest podpisana certyfikatem) — kliknij **„Więcej informacji" → „Uruchom mimo to"**.
+4. Gotowe! Aplikacja działa offline. Aby korzystać z generowania akordów przez AI, wklej klucz API w **⚙️ Ustawienia** (OpenRouter lub Gemini) — jest przechowywany tylko lokalnie.
+
+> 💡 Programiści i osoby chcące zbudować aplikację ze źródeł — instrukcje poniżej w sekcji *Uruchomienie w trybie deweloperskim*.
 
 ## Zrzuty ekranu
 
