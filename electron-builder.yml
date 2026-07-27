@@ -1,0 +1,52 @@
+appId: com.marek.songbookstudio
+productName: Songbook Studio
+copyright: Copyright © 2026 Marek
+
+# better-sqlite3 ma już gotowy binarny build pod ABI Electrona 33 —
+# nie kompilujemy ze źródeł (brak toolchainu C++ nie jest problemem).
+npmRebuild: false
+
+directories:
+  buildResources: build
+  output: dist
+
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml,package-lock.json}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+
+asarUnpack:
+  - resources/**
+  - '**/*.node'
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Songbook Studio
+
+portable:
+  artifactName: ${productName}-${version}-portable.${ext}
+
+# Serwer aktualizacji (electron-updater) — GitHub Releases.
+# Publikacja wydania:  npx electron-builder --win --publish always  (wymaga GH_TOKEN)
+publish:
+  provider: github
+  owner: zetmar-collab
+  repo: songbook-studio

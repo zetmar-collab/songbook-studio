@@ -1,0 +1,133 @@
+{
+  "app": {
+    "title": "Songbook Studio",
+    "subtitle": "Your songbook, chords and ideas — offline"
+  },
+  "sidebar": {
+    "search": "Search title, lyrics, chords…",
+    "newSong": "New song",
+    "import": "Import from Word",
+    "empty": "No songs yet. Create your first!",
+    "noResults": "No results for “{{query}}”",
+    "favorites": "Favorites",
+    "songs": "Songs",
+    "count_one": "{{count}} song",
+    "count_other": "{{count}} songs"
+  },
+  "editor": {
+    "titlePlaceholder": "Song title",
+    "artist": "Artist / author",
+    "key": "Key",
+    "tags": "Tags (comma separated)",
+    "tabLyrics": "Lyrics",
+    "tabChords": "Chords",
+    "tabNotes": "Notes",
+    "tabVoice": "Voice notes",
+    "tabVersions": "Versions",
+    "lyricsPlaceholder": "Type the song lyrics here…",
+    "chordsPlaceholder": "Chords will appear here. Edit manually or generate with AI.",
+    "notesPlaceholder": "Ideas, inspiration, song structure…",
+    "transpose": "Transpose",
+    "saved": "Saved",
+    "unsaved": "Unsaved changes",
+    "save": "Save",
+    "delete": "Delete song",
+    "deleteConfirm": "Delete this song? This cannot be undone.",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites",
+    "selectSong": "Select a song from the list or create a new one",
+    "export": "Export"
+  },
+  "ai": {
+    "generate": "Generate chords (AI)",
+    "generating": "Generating…",
+    "needLyrics": "Please enter the lyrics first.",
+    "error": "AI error: {{message}}",
+    "done": "Chords generated"
+  },
+  "voice": {
+    "record": "Record",
+    "stop": "Stop",
+    "recording": "Recording… {{time}}",
+    "empty": "No voice notes. Record a melody idea.",
+    "delete": "Delete recording",
+    "titlePlaceholder": "Recording name",
+    "micError": "No microphone access."
+  },
+  "versions": {
+    "create": "Save version",
+    "labelPlaceholder": "Version label (e.g. “Verse 2 revised”)",
+    "empty": "No saved versions. Snapshot your lyrics and chords.",
+    "restore": "Restore",
+    "delete": "Delete",
+    "restoreConfirm": "Restore this version? Current lyrics and chords will be overwritten.",
+    "current": "current"
+  },
+  "export": {
+    "pdf": "Export to PDF",
+    "docx": "Export to DOCX",
+    "md": "Export to Markdown",
+    "done": "Exported to {{path}}",
+    "show": "Show file"
+  },
+  "exportAll": {
+    "title": "Export whole songbook",
+    "pdf": "Whole songbook → PDF",
+    "docx": "Whole songbook → DOCX",
+    "md": "Whole songbook → Markdown",
+    "empty": "No songs to export.",
+    "done": "Exported {{count}} songs to {{path}}"
+  },
+  "update": {
+    "title": "Updates",
+    "check": "Check for updates",
+    "checking": "Checking for updates…",
+    "available": "New version {{version}} available — downloading…",
+    "progress": "Downloading update… {{percent}}%",
+    "downloaded": "Version {{version}} downloaded. Restart to install.",
+    "none": "You have the latest version.",
+    "dev": "Updates only work in the installed app.",
+    "error": "Update error: {{message}}"
+  },
+  "backup": {
+    "title": "Backup",
+    "create": "Create backup",
+    "restore": "Restore backup",
+    "openFolder": "Backup folder",
+    "folderLabel": "Backup folder",
+    "folderDefault": "(default — app data directory)",
+    "chooseDir": "Change folder",
+    "resetDir": "Reset to default",
+    "folderSet": "Backup folder: {{path}}",
+    "created": "Backup saved: {{path}}",
+    "restoreConfirm": "Restore database from backup? All current songs will be replaced with the backup contents.",
+    "autoOn": "Auto-backup: on",
+    "autoOff": "Auto-backup: off",
+    "hint": "An automatic backup is created on app close (the last 10 are kept)."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "aiProvider": "AI provider",
+    "openrouterKey": "OpenRouter API key",
+    "openrouterModel": "OpenRouter model (free)",
+    "fetchModels": "Fetch free models list",
+    "modelsNone": "— enter API key to fetch models —",
+    "modelsLoaded": "Loaded {{count}} free models",
+    "modelsError": "Failed to fetch models: {{message}}",
+    "modelManual": "or enter a model id manually",
+    "modelLimitsHint": "ctx = context window, out = max response length (in tokens). Free models share a daily OpenRouter request limit.",
+    "geminiKey": "Gemini API key",
+    "geminiModel": "Gemini model",
+    "testAi": "Test AI connection",
+    "testing": "Testing…",
+    "testOk": "Connection works ✓",
+    "testFail": "Error: {{message}}",
+    "close": "Close",
+    "keyHint": "Keys are stored locally on your computer."
+  }
+}
