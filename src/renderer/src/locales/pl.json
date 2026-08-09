@@ -88,6 +88,7 @@
     "downloaded": "Wersja {{version}} pobrana. Uruchom ponownie, aby zainstalować.",
     "none": "Masz najnowszą wersję.",
     "dev": "Aktualizacje działają tylko w zainstalowanej wersji aplikacji.",
+    "store": "Wersja ze Sklepu Microsoft — aktualizacje pobiera automatycznie Sklep.",
     "error": "Błąd aktualizacji: {{message}}"
   },
   "backup": {

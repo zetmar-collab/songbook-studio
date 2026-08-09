@@ -58,6 +58,7 @@ export default function SettingsModal({
     setUpdateMsg(t('update.checking'))
     const res = await window.api.update.check()
     if (res.state === 'dev') setUpdateMsg(t('update.dev'))
+    else if (res.state === 'store') setUpdateMsg(t('update.store'))
     else if (res.state === 'error') setUpdateMsg(t('update.error', { message: res.message }))
   }
 

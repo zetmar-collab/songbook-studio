@@ -14,7 +14,9 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "dist": "electron-vite build && electron-builder --win --x64",
-    "dist:portable": "electron-vite build && electron-builder --win portable"
+    "dist:portable": "electron-vite build && electron-builder --win portable",
+    "icons": "node build/generate-icon.mjs && node build/generate-appx-assets.mjs",
+    "dist:store": "electron-vite build && electron-builder --win dir --publish never && node build/make-msix.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",

@@ -1,7 +1,22 @@
 import { app, ipcMain, BrowserWindow } from 'electron'
+import { existsSync } from 'fs'
+import { join } from 'path'
 import pkg from 'electron-updater'
 
 const { autoUpdater } = pkg
+
+/**
+ * Wersja ze Sklepu Microsoft (pakiet MSIX) aktualizuje się przez Store —
+ * własny mechanizm aktualizacji jest tam zabroniony politykami Sklepu
+ * i technicznie niemożliwy (katalog instalacji jest tylko do odczytu).
+ */
+export function isStoreBuild(): boolean {
+  // Electron ustawia process.windowsStore w kontenerze MSIX/APPX. Dodatkowo
+  // build/make-msix.mjs umieszcza w pakiecie znacznik `resources/store-build`,
+  // dzieki czemu wykrycie jest deterministyczne i niezalezne od wersji Electrona.
+  if ((process as NodeJS.Process & { windowsStore?: boolean }).windowsStore) return true
+  return !!process.resourcesPath && existsSync(join(process.resourcesPath, 'store-build'))
+}
 
 /**
  * Konfiguruje automatyczne aktualizacje.
@@ -10,6 +25,14 @@ const { autoUpdater } = pkg
  * W trybie deweloperskim i bez serwera aktualizacji nie robi nic destrukcyjnego.
  */
 export function initUpdater(win: BrowserWindow): void {
+  if (isStoreBuild()) {
+    // Sklep Microsoft zarządza aktualizacjami samodzielnie.
+    ipcMain.handle('update:check', () => ({ state: 'store' }))
+    ipcMain.handle('update:install', () => undefined)
+    ipcMain.handle('update:version', () => app.getVersion())
+    return
+  }
+
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
 

@@ -45,6 +45,9 @@ nsis:
 portable:
   artifactName: Songbook-Studio-${version}-portable.${ext}
 
+# Pakiet MSIX dla Sklepu Microsoft budowany jest przez build/make-msix.mjs
+# (Windows SDK), a nie przez cel `appx` electron-buildera — patrz README.
+
 # Serwer aktualizacji (electron-updater) — GitHub Releases.
 # Publikacja wydania:  npx electron-builder --win --publish always  (wymaga GH_TOKEN)
 publish:

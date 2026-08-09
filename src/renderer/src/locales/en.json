@@ -87,6 +87,7 @@
     "downloaded": "Version {{version}} downloaded. Restart to install.",
     "none": "You have the latest version.",
     "dev": "Updates only work in the installed app.",
+    "store": "Microsoft Store build — updates are handled automatically by the Store.",
     "error": "Update error: {{message}}"
   },
   "backup": {

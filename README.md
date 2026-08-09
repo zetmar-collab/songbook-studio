@@ -87,6 +87,85 @@ Są przechowywane lokalnie (baza SQLite w katalogu danych użytkownika) i nigdy 
 - **OpenRouter** — klucz z https://openrouter.ai/keys (domyślny model: `google/gemini-2.0-flash-exp:free`)
 - **Gemini** — klucz z https://aistudio.google.com/app/apikey (domyślny model: `gemini-2.0-flash`)
 
+## Publikacja w Sklepie Microsoft (MSIX)
+
+Pakiet sklepowy budowany jest **bezpośrednio przez Windows SDK** (`makeappx` + `makepri`),
+skryptem [build/make-msix.mjs](build/make-msix.mjs) — nie przez cel `appx` electron-buildera.
+Powody: cel `appx` wymaga paczki `winCodeSign`, której rozpakowanie psują symlinki macOS,
+a jego szablon manifestu nie pozwala zadeklarować mikrofonu (potrzebnego do notatek głosowych).
+
+### Wymagania
+
+- Windows 10/11 SDK (komponent *MSIX Packaging Tools*) — dostarcza `makeappx.exe` i `makepri.exe`
+- Konto w [Partner Center](https://partner.microsoft.com/dashboard) (jednorazowa opłata rejestracyjna)
+
+### 1. Zarezerwuj nazwę w Partner Center
+
+W Partner Center utwórz nową aplikację i zarezerwuj nazwę. Następnie w
+**Product management → Product identity** odczytaj trzy wartości:
+
+| Wartość w Partner Center | Odpowiednik w skrypcie |
+|---|---|
+| Package/Identity/Name (np. `12345MarekZettel.SongbookStudio`) | `MSIX_IDENTITY_NAME` |
+| Package/Identity/Publisher (np. `CN=ABCD1234-…`) | `MSIX_PUBLISHER` |
+| Package/Properties/PublisherDisplayName | `MSIX_PUBLISHER_DISPLAY` |
+
+### 2. Zbuduj pakiet
+
+```bash
+npm run icons
+npm run dist:store
+```
+
+Domyślne wartości tożsamości służą tylko testom lokalnym. Do wydania sklepowego podaj swoje:
+
+```bash
+$env:MSIX_IDENTITY_NAME="12345MarekZettel.SongbookStudio"; $env:MSIX_PUBLISHER="CN=ABCD1234-..."; $env:MSIX_PUBLISHER_DISPLAY="Marek Zettel"; npm run dist:store
+```
+
+Wynik: `dist/Songbook-Studio-1.0.0-store.msix`.
+
+> 🔑 **Certyfikat jest darmowy** — pakiet wysyła się do Partner Center **niepodpisany**,
+> a Microsoft podpisuje go samodzielnie w procesie certyfikacji. Nie kupujesz certyfikatu.
+
+### 3. (Opcjonalnie) Test lokalny przed wysyłką
+
+Aby zainstalować pakiet u siebie, trzeba go podpisać certyfikatem self-signed, którego
+podmiot **musi dokładnie odpowiadać** polu `Publisher` w manifeście. Wymaga uprawnień administratora:
+
+```powershell
+# PowerShell jako administrator
+$cert = New-SelfSignedCertificate -Type Custom -Subject "CN=Marek Zettel" `
+  -KeyUsage DigitalSignature -CertStoreLocation "Cert:\CurrentUser\My" `
+  -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3","2.5.29.19={text}")
+Export-PfxCertificate -Cert $cert -FilePath test.pfx -Password (ConvertTo-SecureString -String "test" -Force -AsPlainText)
+Import-Certificate -FilePath (Export-Certificate -Cert $cert -FilePath test.cer) -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+
+& "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe" sign `
+  /fd SHA256 /f test.pfx /p test "dist\Songbook-Studio-1.0.0-store.msix"
+
+Add-AppxPackage "dist\Songbook-Studio-1.0.0-store.msix"
+```
+
+Pakiet wysyłany do Sklepu musi być **niepodpisany** — przed wysyłką zbuduj go ponownie.
+
+### Co pakiet już zawiera
+
+- ✅ `<DeviceCapability Name="microphone"/>` — bez tego notatki głosowe nie działają w kontenerze MSIX
+- ✅ `runFullTrust` (aplikacja desktopowa Win32)
+- ✅ Wersja czteroczłonowa `1.0.0.0` — Sklep wymaga, by ostatni człon był zerem
+- ✅ Komplet kafelków i splash screen (generowane przez `npm run icons`)
+- ✅ `resources.pri` z deklaracją języków pl-PL / en-US
+- ✅ Wyłączone auto-aktualizacje — Sklep aktualizuje aplikację samodzielnie (wymóg polityk Store)
+
+### O czym pamiętać przy zgłoszeniu
+
+- **Polityka prywatności** — Sklep jej wymaga, bo aplikacja może wysyłać teksty do zewnętrznego
+  dostawcy AI (OpenRouter/Gemini), gdy użytkownik wprowadzi klucz API. Opisz, że dzieje się to
+  wyłącznie na żądanie użytkownika, a klucz i dane pozostają lokalnie.
+- **Uzasadnienie mikrofonu** — w formularzu zgłoszenia opisz, że służy do nagrywania notatek głosowych.
+- **Zrzuty ekranu** — możesz użyć tych z `docs/screenshots/`.
+
 ## Automatyczne aktualizacje
 
 Aplikacja używa **electron-updater**. Po starcie (tylko w wersji zainstalowanej)
