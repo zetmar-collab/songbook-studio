@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Polityka prywatności — Songbook Studio</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --text: #1a1c22; --muted: #6b7280;
+    --border: #d9dce3; --accent: #4361ee; --accent2: #8b5cf6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --text: #e6e8ed; --muted: #9298a5;
+      --border: #2c303a; --accent: #5b78ff; --accent2: #a78bfa;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 20px 80px;
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.65;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; }
+  header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 36px 0 10px;
+  }
+  .logo {
+    width: 44px; height: 44px; border-radius: 11px; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: grid; place-items: center; font-size: 23px;
+  }
+  h1 { font-size: 27px; margin: 0; line-height: 1.25; }
+  .sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .langbar {
+    display: flex; gap: 8px; margin: 18px 0 26px;
+    padding-bottom: 18px; border-bottom: 1px solid var(--border);
+  }
+  .langbar a {
+    text-decoration: none; color: var(--accent); border: 1px solid var(--border);
+    padding: 6px 13px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  }
+  .langbar a:hover { background: var(--panel); }
+  h2 {
+    font-size: 20px; margin: 34px 0 10px; padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  h3 { font-size: 16px; margin: 22px 0 6px; }
+  p, li { font-size: 15px; }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  code {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 5px; font-size: 13px;
+    font-family: Consolas, monospace; word-break: break-all;
+  }
+  .callout {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 14px 16px; border-radius: 8px; margin: 18px 0;
+  }
+  .callout strong { color: var(--accent); }
+  a { color: var(--accent); }
+  footer {
+    margin-top: 46px; padding-top: 18px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px;
+  }
+  hr.lang { border: none; border-top: 3px double var(--border); margin: 60px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">🎵</div>
+    <div>
+      <h1>Polityka prywatności — Songbook Studio</h1>
+      <div class="sub">Ostatnia aktualizacja: 9 sierpnia 2026</div>
+    </div>
+  </header>
+
+  <div class="langbar">
+    <a href="#pl">🇵🇱 Polski</a>
+    <a href="#en">🇬🇧 English</a>
+  </div>
+
+  <!-- ============================ POLSKI ============================ -->
+  <section id="pl">
+
+    <div class="callout">
+      <strong>W skrócie:</strong> Songbook Studio nie zbiera żadnych danych.
+      Nie ma kont, telemetrii, analityki ani reklam. Wszystkie Twoje teksty, akordy
+      i nagrania pozostają na Twoim komputerze. Jedyny moment, w którym cokolwiek
+      opuszcza urządzenie, to świadome użycie funkcji generowania akordów przez AI —
+      po samodzielnym wprowadzeniu klucza API.
+    </div>
+
+    <h2>1. Kto odpowiada za aplikację</h2>
+    <p>
+      Songbook Studio („aplikacja") jest tworzona i udostępniana przez
+      <strong>Marek Zettel – zetmar</strong>.
+      Kontakt: <a href="mailto:zetmar@gmail.com">zetmar@gmail.com</a>.
+    </p>
+    <p>
+      Aplikacja jest oprogramowaniem open source na licencji MIT. Kod źródłowy jest
+      publicznie dostępny pod adresem
+      <a href="https://github.com/zetmar-collab/songbook-studio">github.com/zetmar-collab/songbook-studio</a>
+      i można samodzielnie zweryfikować opisane tu zachowanie.
+    </p>
+
+    <h2>2. Jakich danych NIE zbieramy</h2>
+    <p>Aplikacja <strong>nie zbiera i nie przesyła</strong> do autora ani osób trzecich:</p>
+    <ul>
+      <li>danych osobowych (imienia, adresu e-mail, lokalizacji),</li>
+      <li>danych telemetrycznych, statystyk użycia ani raportów o awariach,</li>
+      <li>identyfikatorów urządzenia lub reklamowych,</li>
+      <li>treści Twoich utworów, notatek i nagrań.</li>
+    </ul>
+    <p>Aplikacja nie wymaga zakładania konta ani logowania. Nie wyświetla reklam.</p>
+
+    <h2>3. Dane przechowywane lokalnie na Twoim urządzeniu</h2>
+    <p>
+      Aplikacja zapisuje dane wyłącznie lokalnie, w katalogu danych aplikacji.
+      W wersji ze Sklepu Microsoft jest to katalog pakietu w
+      <code>%LOCALAPPDATA%\Packages\</code>, a w wersji instalowanej z pliku —
+      <code>%APPDATA%\songbook-studio\</code>.
+    </p>
+    <ul>
+      <li><strong>Baza SQLite</strong> — utwory, teksty, akordy, notatki, tagi, historia wersji i ustawienia.</li>
+      <li><strong>Nagrania notatek głosowych</strong> — pliki <code>.webm</code>.</li>
+      <li><strong>Kopie zapasowe</strong> — w katalogu danych aplikacji lub w folderze, który sam wskażesz.</li>
+      <li><strong>Klucz API dostawcy AI</strong> — jeśli go wprowadzisz; zapisywany jest w lokalnej bazie ustawień
+        w postaci niezaszyfrowanej i nigdy nie jest wysyłany nigdzie poza wybranego przez Ciebie dostawcę AI.</li>
+    </ul>
+    <p>
+      Autor aplikacji nie ma dostępu do tych danych. Nie są one synchronizowane z żadną chmurą.
+    </p>
+
+    <h2>4. Mikrofon</h2>
+    <p>
+      Aplikacja prosi o dostęp do mikrofonu wyłącznie po to, aby umożliwić nagrywanie
+      <strong>notatek głosowych</strong> — na przykład zanuconej melodii do tworzonego utworu.
+    </p>
+    <ul>
+      <li>Nagrywanie uruchamia się <strong>tylko</strong> po kliknięciu przycisku „Nagraj".</li>
+      <li>Aplikacja nie nasłuchuje w tle ani nie nagrywa bez Twojego działania.</li>
+      <li>Nagrania zapisywane są wyłącznie lokalnie i <strong>nigdy nie są nigdzie wysyłane</strong>
+        — także wtedy, gdy korzystasz z funkcji AI.</li>
+      <li>Każde nagranie możesz usunąć w aplikacji.</li>
+    </ul>
+
+    <h2>5. Kiedy dane opuszczają Twoje urządzenie</h2>
+    <p>
+      Domyślnie aplikacja działa w pełni offline i nie łączy się z internetem.
+      Połączenie następuje wyłącznie w jednym przypadku: gdy <strong>samodzielnie wprowadzisz
+      klucz API</strong> dostawcy AI i użyjesz funkcji <em>„Generuj akordy (AI)"</em>.
+    </p>
+    <p>Wysyłane są wtedy — do wybranego przez Ciebie dostawcy — wyłącznie dane potrzebne do wykonania zadania:</p>
+    <ul>
+      <li>tekst utworu, którego dotyczy operacja,</li>
+      <li>tytuł, wykonawca i tonacja tego utworu.</li>
+    </ul>
+    <p>
+      <strong>Nie są wysyłane:</strong> nagrania głosowe, notatki, historia wersji, kopie zapasowe
+      ani pozostałe utwory z Twojego katalogu.
+    </p>
+    <p>
+      Dodatkowo, jeśli w ustawieniach wybierzesz OpenRouter, aplikacja pobiera z jego publicznego
+      API listę dostępnych darmowych modeli. Nie są przy tym wysyłane żadne Twoje treści.
+    </p>
+    <p>Dane przetwarzane są dalej zgodnie z zasadami wybranego dostawcy:</p>
+    <ul>
+      <li>OpenRouter — <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener">openrouter.ai/privacy</a></li>
+      <li>Google Gemini — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+    </ul>
+    <p>
+      Jeśli nie wprowadzisz klucza API, funkcja AI pozostaje nieaktywna, a aplikacja
+      nie wysyła niczego na zewnątrz.
+    </p>
+
+    <h2>6. Aktualizacje</h2>
+    <p>
+      Wersja pobrana ze <strong>Sklepu Microsoft</strong> jest aktualizowana przez sam Sklep —
+      aplikacja nie łączy się w tym celu z żadnym serwerem.
+      Wersja pobrana z GitHuba sprawdza dostępność nowej wersji w serwisie GitHub;
+      przesyłany jest wtedy jedynie zwykły request HTTP, bez Twoich danych.
+    </p>
+
+    <h2>7. Dzieci</h2>
+    <p>
+      Aplikacja nie jest kierowana do dzieci poniżej 13. roku życia i nie zbiera świadomie
+      danych od takich osób. Ponieważ aplikacja nie zbiera danych w ogóle, nie gromadzi ich
+      również od dzieci.
+    </p>
+
+    <h2>8. Twoje prawa i usuwanie danych</h2>
+    <p>
+      Ponieważ wszystkie dane pozostają na Twoim urządzeniu, masz nad nimi pełną kontrolę.
+      Możesz je w każdej chwili wyeksportować (PDF, DOCX, Markdown), skopiować lub usunąć —
+      pojedynczo w aplikacji albo w całości, usuwając katalog danych aplikacji lub ją odinstalowując.
+      Autor nie przechowuje żadnych Twoich danych, więc nie ma czego udostępniać ani usuwać po jego stronie.
+    </p>
+
+    <h2>9. Zmiany polityki</h2>
+    <p>
+      W razie zmian w działaniu aplikacji ta polityka zostanie zaktualizowana, a data na górze
+      strony ulegnie zmianie. Historia zmian jest jawna w repozytorium na GitHubie.
+    </p>
+
+    <h2>10. Kontakt</h2>
+    <p>
+      Pytania dotyczące prywatności: <a href="mailto:zetmar@gmail.com">zetmar@gmail.com</a>
+    </p>
+  </section>
+
+  <hr class="lang" />
+
+  <!-- ============================ ENGLISH ============================ -->
+  <section id="en">
+    <header>
+      <div class="logo">🎵</div>
+      <div>
+        <h1>Privacy Policy — Songbook Studio</h1>
+        <div class="sub">Last updated: 9 August 2026</div>
+      </div>
+    </header>
+
+    <div class="callout">
+      <strong>In short:</strong> Songbook Studio collects no data. There are no accounts,
+      no telemetry, no analytics and no ads. All your lyrics, chords and recordings stay on
+      your computer. The only time anything leaves your device is when you deliberately use
+      the AI chord generation feature after entering your own API key.
+    </div>
+
+    <h2>1. Who is responsible</h2>
+    <p>
+      Songbook Studio (the "app") is developed and published by <strong>Marek Zettel – zetmar</strong>.
+      Contact: <a href="mailto:zetmar@gmail.com">zetmar@gmail.com</a>.
+    </p>
+    <p>
+      The app is open source under the MIT license. Its source code is publicly available at
+      <a href="https://github.com/zetmar-collab/songbook-studio">github.com/zetmar-collab/songbook-studio</a>,
+      so the behaviour described here can be independently verified.
+    </p>
+
+    <h2>2. What we do NOT collect</h2>
+    <p>The app does <strong>not collect or transmit</strong> to the developer or any third party:</p>
+    <ul>
+      <li>personal data (name, email address, location),</li>
+      <li>telemetry, usage statistics or crash reports,</li>
+      <li>device or advertising identifiers,</li>
+      <li>the content of your songs, notes or recordings.</li>
+    </ul>
+    <p>No account or sign-in is required. The app shows no advertising.</p>
+
+    <h2>3. Data stored locally on your device</h2>
+    <p>
+      All data is stored locally in the app data directory — for the Microsoft Store version
+      inside <code>%LOCALAPPDATA%\Packages\</code>, and for the standalone installer in
+      <code>%APPDATA%\songbook-studio\</code>.
+    </p>
+    <ul>
+      <li><strong>SQLite database</strong> — songs, lyrics, chords, notes, tags, version history and settings.</li>
+      <li><strong>Voice note recordings</strong> — <code>.webm</code> files.</li>
+      <li><strong>Backups</strong> — in the app data directory or a folder you choose yourself.</li>
+      <li><strong>AI provider API key</strong> — if you enter one; it is stored unencrypted in the local
+        settings database and is never sent anywhere other than the AI provider you selected.</li>
+    </ul>
+    <p>The developer has no access to this data. It is not synchronised to any cloud service.</p>
+
+    <h2>4. Microphone</h2>
+    <p>
+      The app requests microphone access for one purpose only: to let you record
+      <strong>voice notes</strong> — for example humming a melody idea for a song you are writing.
+    </p>
+    <ul>
+      <li>Recording starts <strong>only</strong> when you press the "Record" button.</li>
+      <li>The app never listens in the background and never records without your action.</li>
+      <li>Recordings are stored locally and are <strong>never transmitted anywhere</strong>,
+        including when you use the AI feature.</li>
+      <li>You can delete any recording from within the app.</li>
+    </ul>
+
+    <h2>5. When data leaves your device</h2>
+    <p>
+      By default the app is fully offline and makes no network connections. A connection is made
+      in one case only: when you <strong>enter your own AI provider API key</strong> and use the
+      <em>"Generate chords (AI)"</em> feature.
+    </p>
+    <p>In that case, only the data required for the task is sent to the provider you selected:</p>
+    <ul>
+      <li>the lyrics of the song in question,</li>
+      <li>that song's title, artist and key.</li>
+    </ul>
+    <p>
+      <strong>Not sent:</strong> voice recordings, notes, version history, backups, or any other
+      songs from your catalog.
+    </p>
+    <p>
+      In addition, if you select OpenRouter in the settings, the app fetches the list of available
+      free models from its public API. No content of yours is sent in that request.
+    </p>
+    <p>Data is then processed according to the selected provider's own policy:</p>
+    <ul>
+      <li>OpenRouter — <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener">openrouter.ai/privacy</a></li>
+      <li>Google Gemini — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+    </ul>
+    <p>If you do not enter an API key, the AI feature stays inactive and nothing is sent externally.</p>
+
+    <h2>6. Updates</h2>
+    <p>
+      The <strong>Microsoft Store</strong> version is updated by the Store itself — the app contacts
+      no server for this. The version downloaded from GitHub checks GitHub for a newer release;
+      this is a plain HTTP request that carries none of your data.
+    </p>
+
+    <h2>7. Children</h2>
+    <p>
+      The app is not directed at children under 13 and does not knowingly collect data from them.
+      As the app collects no data at all, it collects none from children either.
+    </p>
+
+    <h2>8. Your rights and deleting your data</h2>
+    <p>
+      Because all data stays on your device, you remain in full control of it. You can export it at
+      any time (PDF, DOCX, Markdown), copy it, or delete it — individually within the app, or entirely
+      by removing the app data directory or uninstalling the app. The developer stores none of your
+      data, so there is nothing to disclose or erase on our side.
+    </p>
+
+    <h2>9. Changes to this policy</h2>
+    <p>
+      If the app's behaviour changes, this policy will be updated and the date at the top of the page
+      will change. The full change history is public in the GitHub repository.
+    </p>
+
+    <h2>10. Contact</h2>
+    <p>Privacy questions: <a href="mailto:zetmar@gmail.com">zetmar@gmail.com</a></p>
+  </section>
+
+  <footer>
+    Songbook Studio — open source (MIT) ·
+    <a href="https://github.com/zetmar-collab/songbook-studio">github.com/zetmar-collab/songbook-studio</a>
+  </footer>
+
+</div>
+</body>
+</html>
