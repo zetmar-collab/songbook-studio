@@ -28,7 +28,10 @@ const IDENTITY_NAME = process.env.MSIX_IDENTITY_NAME || 'MarekZettel-zetmar.Song
 const PUBLISHER = process.env.MSIX_PUBLISHER || 'CN=15A53D32-C868-48EE-B700-5DBB5449CA1B'
 const PUBLISHER_DISPLAY = process.env.MSIX_PUBLISHER_DISPLAY || 'Marek Zettel - zetmar'
 
-const DISPLAY_NAME = 'Songbook Studio'
+// UWAGA: musi byc DOKLADNIE jedna z nazw zarezerwowanych w Partner Center
+// (Product management -> Manage app names). Sklep odrzuca pakiet, jesli
+// Package/Properties/DisplayName nie odpowiada zadnej zarezerwowanej nazwie.
+const DISPLAY_NAME = process.env.MSIX_DISPLAY_NAME || 'Songbook-Studio'
 const DESCRIPTION =
   'Organizuj teksty piosenek, akordy i pomysly na utwory. Dziala offline, z opcjonalnym generowaniem akordow przez AI.'
 const EXECUTABLE = 'Songbook Studio.exe'
