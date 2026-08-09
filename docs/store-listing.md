@@ -35,6 +35,32 @@ są aktualnymi limitami Partner Center — teksty poniżej mieszczą się w nich
 > w tle. Nagrania zapisywane są wyłącznie lokalnie na urządzeniu użytkownika i nigdy nie
 > są nigdzie przesyłane. Użytkownik może je w każdej chwili odsłuchać i usunąć.
 
+**Notes for certification** (Submission options → *Notes for certification*) — Partner Center
+pokazuje ostrzeżenie, że `runFullTrust` to uprawnienie zastrzeżone wymagające zgody. Dla
+aplikacji Win32 pakowanych jako MSIX jest to standard, ale warto to wyjaśnić recenzentowi.
+Wklej poniższy tekst (po angielsku — czytają go recenzenci Microsoftu):
+
+```
+Songbook Studio is a Win32 desktop application (Electron) packaged as MSIX, which is why the
+package declares the runFullTrust restricted capability. Full trust is required to store the
+user's songs in a local SQLite database, to read and write user-selected files during import
+(.docx) and export (PDF / DOCX / Markdown), and to write backup files to a folder chosen by
+the user.
+
+The microphone device capability is used solely for the "voice notes" feature: the user presses
+a Record button to capture a short audio memo of a melody idea. Recording never starts without
+an explicit user action, the app never listens in the background, and recordings are stored
+locally and are never transmitted anywhere.
+
+The app is fully functional offline and requires no account. It contacts an external service
+only if the user voluntarily enters their own AI provider API key (OpenRouter or Google Gemini)
+and uses the optional chord generation feature. API keys are stored encrypted on the device
+using the Windows DPAPI mechanism.
+
+Privacy policy: https://zetmar-collab.github.io/songbook-studio/privacy-policy.html
+Source code (MIT): https://github.com/zetmar-collab/songbook-studio
+```
+
 **Klasyfikacja wiekowa** — w kwestionariuszu zaznacz:
 - brak przemocy, treści dla dorosłych, hazardu i zakupów,
 - **aplikacja umożliwia dostęp do internetu**: tak, ale wyłącznie opcjonalnie — użytkownik
