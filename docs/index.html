@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Songbook Studio — teksty, akordy i pomysły na utwory</title>
+<meta name="description" content="Desktopowa aplikacja na Windows do organizowania tekstów piosenek, akordów i pomysłów na utwory. Działa offline. Darmowa i open source." />
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --text: #1a1c22; --muted: #6b7280;
+    --border: #d9dce3; --accent: #4361ee; --accent2: #8b5cf6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --text: #e6e8ed; --muted: #9298a5;
+      --border: #2c303a; --accent: #5b78ff; --accent2: #a78bfa;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 20px 70px;
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  header { text-align: center; padding: 60px 0 34px; }
+  .logo {
+    width: 76px; height: 76px; border-radius: 19px; margin: 0 auto 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: grid; place-items: center; font-size: 40px;
+  }
+  h1 { font-size: 36px; margin: 0 0 8px; }
+  .tagline { color: var(--muted); font-size: 17px; margin: 0 auto; max-width: 560px; }
+  .cta { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 600; font-size: 15px;
+    padding: 11px 22px; border-radius: 9px; border: 1px solid var(--border);
+    color: var(--text); background: var(--panel);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:hover { opacity: .9; }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 36px 0 10px; }
+  .shots img {
+    width: 100%; height: auto; border-radius: 10px;
+    border: 1px solid var(--border); display: block;
+  }
+  @media (max-width: 700px) { .shots { grid-template-columns: 1fr; } }
+  h2 { font-size: 22px; margin: 44px 0 14px; }
+  ul.features { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px; }
+  @media (max-width: 700px) { ul.features { grid-template-columns: 1fr; } }
+  ul.features li { padding-left: 26px; position: relative; font-size: 15px; }
+  ul.features li::before { content: '✓'; position: absolute; left: 4px; color: var(--accent); font-weight: 700; }
+  footer {
+    margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 14px; text-align: center;
+  }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">🎵</div>
+    <h1>Songbook Studio</h1>
+    <p class="tagline">
+      Teksty piosenek, akordy i pomysły na utwory — w jednym miejscu, na Twoim komputerze.
+      Działa offline. Darmowe i open source.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/zetmar-collab/songbook-studio/releases/latest">Pobierz na Windows</a>
+      <a class="btn" href="https://github.com/zetmar-collab/songbook-studio">Kod źródłowy</a>
+      <a class="btn" href="privacy-policy.html">Polityka prywatności</a>
+    </div>
+  </header>
+
+  <div class="shots">
+    <img src="screenshots/main-light.png" alt="Songbook Studio — motyw jasny" />
+    <img src="screenshots/main-dark.png" alt="Songbook Studio — motyw ciemny" />
+  </div>
+
+  <h2>Co potrafi</h2>
+  <ul class="features">
+    <li>Katalog utworów z wyszukiwaniem pełnotekstowym</li>
+    <li>Historia wersji tekstów z przywracaniem</li>
+    <li>Notatki głosowe nagrywane w aplikacji</li>
+    <li>Generowanie akordów przez AI (OpenRouter / Gemini)</li>
+    <li>Transpozycja akordów i tonacji</li>
+    <li>Import z plików Worda (.docx)</li>
+    <li>Eksport do PDF, DOCX i Markdown</li>
+    <li>Eksport całego śpiewnika do jednego pliku</li>
+    <li>Kopie zapasowe automatyczne i ręczne</li>
+    <li>Motyw jasny, ciemny i systemowy</li>
+    <li>Interfejs po polsku i angielsku</li>
+    <li>Działa bez konta i bez internetu</li>
+  </ul>
+
+  <h2>Prywatność w skrócie</h2>
+  <p>
+    Aplikacja nie zbiera żadnych danych — nie ma kont, telemetrii ani reklam. Teksty, nagrania
+    i ustawienia zostają na Twoim komputerze. Cokolwiek opuszcza urządzenie wyłącznie wtedy, gdy
+    sam wprowadzisz klucz API i użyjesz generowania akordów przez AI.
+    Szczegóły: <a href="privacy-policy.html">polityka prywatności</a>.
+  </p>
+
+  <footer>
+    Songbook Studio — open source na licencji
+    <a href="https://github.com/zetmar-collab/songbook-studio/blob/main/LICENSE">MIT</a> ·
+    Kontakt: <a href="mailto:zetmar@gmail.com">zetmar@gmail.com</a>
+  </footer>
+
+</div>
+</body>
+</html>
