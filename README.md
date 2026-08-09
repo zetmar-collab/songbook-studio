@@ -156,13 +156,20 @@ Pakiet wysyłany do Sklepu musi być **niepodpisany** — przed wysyłką zbuduj
 - ✅ `resources.pri` z deklaracją języków pl-PL / en-US
 - ✅ Wyłączone auto-aktualizacje — Sklep aktualizuje aplikację samodzielnie (wymóg polityk Store)
 
-### O czym pamiętać przy zgłoszeniu
+### Materiały do zgłoszenia
 
-- **Polityka prywatności** — Sklep jej wymaga, bo aplikacja może wysyłać teksty do zewnętrznego
-  dostawcy AI (OpenRouter/Gemini), gdy użytkownik wprowadzi klucz API. Opisz, że dzieje się to
-  wyłącznie na żądanie użytkownika, a klucz i dane pozostają lokalnie.
-- **Uzasadnienie mikrofonu** — w formularzu zgłoszenia opisz, że służy do nagrywania notatek głosowych.
-- **Zrzuty ekranu** — możesz użyć tych z `docs/screenshots/`.
+Wszystko, czego wymaga Partner Center, jest już przygotowane:
+
+| Element | Gdzie |
+|---|---|
+| Polityka prywatności (URL) | [zetmar-collab.github.io/songbook-studio/privacy-policy.html](https://zetmar-collab.github.io/songbook-studio/privacy-policy.html) |
+| Strona produktu (URL) | [zetmar-collab.github.io/songbook-studio](https://zetmar-collab.github.io/songbook-studio/) |
+| Teksty listingu PL/EN, cechy, hasła wyszukiwania | [docs/store-listing.md](docs/store-listing.md) |
+| Uzasadnienie dostępu do mikrofonu | [docs/store-listing.md](docs/store-listing.md) → *Deklaracje produktu* |
+| Zrzuty ekranu (1584 × 903, wymóg: min. 1366 × 768) | [docs/screenshots/](docs/screenshots/) |
+
+Źródła stron WWW leżą w `docs/` i są publikowane przez GitHub Pages
+(Settings → Pages → Source: `main`, folder `/docs`).
 
 ## Automatyczne aktualizacje
 

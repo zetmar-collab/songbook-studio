@@ -16,11 +16,12 @@ są aktualnymi limitami Partner Center — teksty poniżej mieszczą się w nich
 | Rynki | Wszystkie (aplikacja ma interfejs PL i EN) |
 | Wymagany sprzęt | Mikrofon — *opcjonalny* (tylko notatki głosowe) |
 | Polityka prywatności (URL) | `https://zetmar-collab.github.io/songbook-studio/privacy-policy.html` |
+| Strona produktu (URL) | `https://zetmar-collab.github.io/songbook-studio/` |
 | Strona pomocy technicznej | `https://github.com/zetmar-collab/songbook-studio/issues` |
 | Kontakt | `zetmar@gmail.com` |
 
-> ⚠️ Adres polityki prywatności zadziała dopiero po włączeniu GitHub Pages
-> (Settings → Pages → Source: `main` / folder `/docs`).
+> ✅ GitHub Pages jest włączone (`main` / folder `/docs`) — oba adresy są aktywne
+> i zwracają HTTP 200.
 
 ---
 
