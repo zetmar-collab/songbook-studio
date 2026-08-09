@@ -99,31 +99,29 @@ a jego szablon manifestu nie pozwala zadeklarować mikrofonu (potrzebnego do not
 - Windows 10/11 SDK (komponent *MSIX Packaging Tools*) — dostarcza `makeappx.exe` i `makepri.exe`
 - Konto w [Partner Center](https://partner.microsoft.com/dashboard) (jednorazowa opłata rejestracyjna)
 
-### 1. Zarezerwuj nazwę w Partner Center
+### 1. Tożsamość pakietu
 
-W Partner Center utwórz nową aplikację i zarezerwuj nazwę. Następnie w
-**Product management → Product identity** odczytaj trzy wartości:
+Nazwa jest już zarezerwowana w Partner Center, a wartości tożsamości wpisane na stałe
+w [build/make-msix.mjs](build/make-msix.mjs) — zgodnie z **Product management → Product identity**:
 
-| Wartość w Partner Center | Odpowiednik w skrypcie |
+| Pole | Wartość |
 |---|---|
-| Package/Identity/Name (np. `12345MarekZettel.SongbookStudio`) | `MSIX_IDENTITY_NAME` |
-| Package/Identity/Publisher (np. `CN=ABCD1234-…`) | `MSIX_PUBLISHER` |
-| Package/Properties/PublisherDisplayName | `MSIX_PUBLISHER_DISPLAY` |
+| Package/Identity/Name | `MarekZettel-zetmar.Songbook-Studio` |
+| Package/Identity/Publisher | `CN=15A53D32-C868-48EE-B700-5DBB5449CA1B` |
+| Package/Properties/PublisherDisplayName | `Marek Zettel - zetmar` |
+
+Te wartości są jawne — trafiają do manifestu każdego opublikowanego pakietu.
+W razie potrzeby (np. inne konto) nadpiszesz je zmiennymi `MSIX_IDENTITY_NAME`,
+`MSIX_PUBLISHER`, `MSIX_PUBLISHER_DISPLAY`.
 
 ### 2. Zbuduj pakiet
 
 ```bash
-npm run icons
 npm run dist:store
 ```
 
-Domyślne wartości tożsamości służą tylko testom lokalnym. Do wydania sklepowego podaj swoje:
-
-```bash
-$env:MSIX_IDENTITY_NAME="12345MarekZettel.SongbookStudio"; $env:MSIX_PUBLISHER="CN=ABCD1234-..."; $env:MSIX_PUBLISHER_DISPLAY="Marek Zettel"; npm run dist:store
-```
-
-Wynik: `dist/Songbook-Studio-1.0.0-store.msix`.
+Wynik: `dist/Songbook-Studio-1.0.0-store.msix` — gotowy do wysłania do Partner Center.
+(`npm run icons` uruchamiaj tylko po zmianie grafiki logo.)
 
 > 🔑 **Certyfikat jest darmowy** — pakiet wysyła się do Partner Center **niepodpisany**,
 > a Microsoft podpisuje go samodzielnie w procesie certyfikacji. Nie kupujesz certyfikatu.
@@ -135,7 +133,7 @@ podmiot **musi dokładnie odpowiadać** polu `Publisher` w manifeście. Wymaga u
 
 ```powershell
 # PowerShell jako administrator
-$cert = New-SelfSignedCertificate -Type Custom -Subject "CN=Marek Zettel" `
+$cert = New-SelfSignedCertificate -Type Custom -Subject "CN=15A53D32-C868-48EE-B700-5DBB5449CA1B" `
   -KeyUsage DigitalSignature -CertStoreLocation "Cert:\CurrentUser\My" `
   -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3","2.5.29.19={text}")
 Export-PfxCertificate -Cert $cert -FilePath test.pfx -Password (ConvertTo-SecureString -String "test" -Force -AsPlainText)
