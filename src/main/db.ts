@@ -2,6 +2,7 @@ import { app } from 'electron'
 import { join } from 'path'
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'fs'
 import Database from 'better-sqlite3'
+import { decryptSecret, encryptSecret, isEncrypted, isSecret } from './secrets'
 
 export interface Song {
   id: number
@@ -116,6 +117,8 @@ export function initDb(): Database.Database {
       VALUES (new.id, new.title, new.artist, new.tags, new.lyrics, new.chords, new.notes);
     END;
   `)
+
+  migrateSecrets()
 
   return db
 }
@@ -290,21 +293,36 @@ export function getSetting(key: string): string {
   const row = getDb().prepare('SELECT value FROM settings WHERE key = ?').get(key) as
     | { value: string }
     | undefined
-  return row?.value ?? ''
+  const value = row?.value ?? ''
+  return isSecret(key) ? decryptSecret(value) : value
 }
 
 export function getAllSettings(): Record<string, string> {
   const rows = getDb().prepare('SELECT key, value FROM settings').all() as Setting[]
-  return Object.fromEntries(rows.map((r) => [r.key, r.value]))
+  return Object.fromEntries(
+    rows.map((r) => [r.key, isSecret(r.key) ? decryptSecret(r.value) : r.value])
+  )
 }
 
 export function setSetting(key: string, value: string): void {
+  // Klucze API trafiaja do bazy wylacznie w postaci zaszyfrowanej.
+  const stored = isSecret(key) ? encryptSecret(value) : value
   getDb()
     .prepare(
       `INSERT INTO settings (key, value) VALUES (?, ?)
        ON CONFLICT(key) DO UPDATE SET value = excluded.value`
     )
-    .run(key, value)
+    .run(key, stored)
+}
+
+/** Doszyfrowuje klucze API zapisane jawnie przez wczesniejsze wersje aplikacji. */
+function migrateSecrets(): void {
+  const rows = getDb().prepare('SELECT key, value FROM settings').all() as Setting[]
+  for (const row of rows) {
+    if (isSecret(row.key) && row.value && !isEncrypted(row.value)) {
+      setSetting(row.key, row.value)
+    }
+  }
 }
 
 // ---------- Kopie zapasowe ----------

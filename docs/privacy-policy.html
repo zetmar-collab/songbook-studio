@@ -130,8 +130,11 @@
       <li><strong>Baza SQLite</strong> — utwory, teksty, akordy, notatki, tagi, historia wersji i ustawienia.</li>
       <li><strong>Nagrania notatek głosowych</strong> — pliki <code>.webm</code>.</li>
       <li><strong>Kopie zapasowe</strong> — w katalogu danych aplikacji lub w folderze, który sam wskażesz.</li>
-      <li><strong>Klucz API dostawcy AI</strong> — jeśli go wprowadzisz; zapisywany jest w lokalnej bazie ustawień
-        w postaci niezaszyfrowanej i nigdy nie jest wysyłany nigdzie poza wybranego przez Ciebie dostawcę AI.</li>
+      <li><strong>Klucz API dostawcy AI</strong> — jeśli go wprowadzisz. Jest przechowywany
+        <strong>w postaci zaszyfrowanej</strong>, przy użyciu mechanizmu systemu Windows (DPAPI)
+        powiązanego z Twoim kontem użytkownika — dzięki temu pozostaje nieczytelny dla kogoś,
+        kto uzyskałby sam plik bazy lub kopię zapasową. Klucz nie jest wysyłany nigdzie poza
+        wybranego przez Ciebie dostawcę AI.</li>
     </ul>
     <p>
       Autor aplikacji nie ma dostępu do tych danych. Nie są one synchronizowane z żadną chmurą.
@@ -264,8 +267,10 @@
       <li><strong>SQLite database</strong> — songs, lyrics, chords, notes, tags, version history and settings.</li>
       <li><strong>Voice note recordings</strong> — <code>.webm</code> files.</li>
       <li><strong>Backups</strong> — in the app data directory or a folder you choose yourself.</li>
-      <li><strong>AI provider API key</strong> — if you enter one; it is stored unencrypted in the local
-        settings database and is never sent anywhere other than the AI provider you selected.</li>
+      <li><strong>AI provider API key</strong> — if you enter one. It is stored <strong>encrypted</strong>,
+        using the Windows operating system mechanism (DPAPI) tied to your user account, so it stays
+        unreadable to anyone who obtains the database file or a backup copy. The key is never sent
+        anywhere other than the AI provider you selected.</li>
     </ul>
     <p>The developer has no access to this data. It is not synchronised to any cloud service.</p>
 

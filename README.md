@@ -14,8 +14,8 @@ Zbudowana w **Electron + React + TypeScript + SQLite**.
 
 1. Przejdź do **[najnowszego wydania](https://github.com/zetmar-collab/songbook-studio/releases/latest)**.
 2. Pobierz plik z sekcji **Assets**:
-   - **`Songbook-Studio-1.0.0-x64.exe`** — instalator (zalecane: skróty w menu Start i na pulpicie, automatyczne aktualizacje), **lub**
-   - **`Songbook-Studio-1.0.0-portable.exe`** — wersja przenośna, uruchamiana bez instalacji (np. z pendrive'a).
+   - **`Songbook-Studio-<wersja>-x64.exe`** — instalator (zalecane: skróty w menu Start i na pulpicie, automatyczne aktualizacje), **lub**
+   - **`Songbook-Studio-<wersja>-portable.exe`** — wersja przenośna, uruchamiana bez instalacji (np. z pendrive'a).
 3. Uruchom pobrany plik. Przy pierwszym starcie Windows SmartScreen może pokazać ostrzeżenie (aplikacja nie jest podpisana certyfikatem) — kliknij **„Więcej informacji" → „Uruchom mimo to"**.
 4. Gotowe! Aplikacja działa offline. Aby korzystać z generowania akordów przez AI, wklej klucz API w **⚙️ Ustawienia** (OpenRouter lub Gemini) — jest przechowywany tylko lokalnie.
 
@@ -71,8 +71,8 @@ npm run dist:portable
 
 Gotowe pliki znajdziesz w katalogu `dist/`:
 
-- `Songbook Studio-1.0.0-x64.exe` — instalator NSIS (~82 MB)
-- `Songbook Studio-1.0.0-portable.exe` — wersja przenośna (bez instalacji)
+- `Songbook-Studio-<wersja>-x64.exe` — instalator NSIS (~82 MB)
+- `Songbook-Studio-<wersja>-portable.exe` — wersja przenośna (bez instalacji)
 
 > ⚠️ Instalator nie jest podpisany certyfikatem. Przy pierwszym uruchomieniu
 > Windows SmartScreen może pokazać ostrzeżenie — kliknij „Więcej informacji" →
@@ -120,7 +120,7 @@ W razie potrzeby (np. inne konto) nadpiszesz je zmiennymi `MSIX_IDENTITY_NAME`,
 npm run dist:store
 ```
 
-Wynik: `dist/Songbook-Studio-1.0.0-store.msix` — gotowy do wysłania do Partner Center.
+Wynik: `dist/Songbook-Studio-<wersja>-store.msix` — gotowy do wysłania do Partner Center.
 (`npm run icons` uruchamiaj tylko po zmianie grafiki logo.)
 
 > 🔑 **Certyfikat jest darmowy** — pakiet wysyła się do Partner Center **niepodpisany**,
@@ -257,6 +257,10 @@ development with C++") i wtedy zwykłe `npm install` skompiluje moduł samodziel
 
 ## Bezpieczeństwo
 
+- **Klucze API szyfrowane w spoczynku** — `safeStorage` Electrona (na Windows DPAPI, powiązane
+  z kontem użytkownika). Klucz nie występuje jawnie w bazie ani w kopiach zapasowych
+  ([src/main/secrets.ts](src/main/secrets.ts)); klucze zapisane przez starsze wersje są
+  doszyfrowywane automatycznie przy starcie
 - `contextIsolation: true`, `nodeIntegration: false`, `sandbox` z preloadem
 - Renderer komunikuje się z systemem tylko przez zdefiniowane kanały IPC
 - Ścisła Content-Security-Policy w `index.html`

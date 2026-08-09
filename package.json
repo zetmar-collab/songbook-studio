@@ -1,6 +1,6 @@
 {
   "name": "songbook-studio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Desktopowa aplikacja do organizowania tekstów piosenek, akordów i pomysłów na utwory. Działa offline, z generowaniem akordów przez AI.",
   "main": "./out/main/index.js",
   "author": "Marek",
