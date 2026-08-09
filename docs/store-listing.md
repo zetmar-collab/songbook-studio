@@ -293,13 +293,15 @@ https://github.com/zetmar-collab/songbook-studio/blob/main/LICENSE
 
 Wymóg Sklepu: minimum **1366 × 768 px**, format PNG, co najmniej 1 zrzut (maksymalnie 10).
 
-Gotowe pliki spełniające ten wymóg (1584 × 903 px):
+Gotowe pliki spełniające ten wymóg (wszystkie 1584 × 903 px). Kopia do wygodnego
+wskazania w oknie wyboru pliku: **`C:\Users\Marek\Desktop\Songbook-Store-Zrzuty\`**
 
-| Plik | Podpis PL | Podpis EN |
-|---|---|---|
-| `docs/screenshots/main-light.png` | Katalog utworów i edytor tekstu — motyw jasny | Song catalog and lyrics editor — light theme |
-| `docs/screenshots/main-dark.png` | Ten sam widok w motywie ciemnym | The same view in dark theme |
+Kolejność ma znaczenie — pierwszy zrzut jest miniaturą w Sklepie.
 
-> 💡 Warto dodać jeszcze 2–3 zrzuty pokazujące zakładki **Akordy** (z transpozycją),
-> **Notatki głosowe** i **Wersje** — listingi z 4–5 zrzutami konwertują wyraźnie lepiej
-> niż te z jednym.
+| # | Plik | Podpis PL | Podpis EN |
+|---|---|---|---|
+| 1 | `main-light.png` | Katalog utworów i edytor tekstu | Song catalog and lyrics editor |
+| 2 | `chords.png` | Akordy nad tekstem i transpozycja do własnej tonacji | Chords over lyrics and transposition to your own key |
+| 3 | `versions.png` | Historia wersji — wróć do wcześniejszej wersji tekstu | Version history — restore an earlier take of your lyrics |
+| 4 | `settings.png` | Motyw, język PL/EN, dostawca AI i kopie zapasowe | Theme, English/Polish, AI provider and backups |
+| 5 | `main-dark.png` | Motyw ciemny | Dark theme |

@@ -129,6 +129,6 @@
     "testOk": "Connection works ✓",
     "testFail": "Error: {{message}}",
     "close": "Close",
-    "keyHint": "Keys are stored locally on your computer."
+    "keyHint": "Keys are stored locally and encrypted using the Windows OS mechanism."
   }
 }

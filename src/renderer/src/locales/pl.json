@@ -130,6 +130,6 @@
     "testOk": "Połączenie działa ✓",
     "testFail": "Błąd: {{message}}",
     "close": "Zamknij",
-    "keyHint": "Klucze przechowywane są lokalnie na Twoim komputerze."
+    "keyHint": "Klucze są przechowywane lokalnie i zaszyfrowane mechanizmem systemu Windows."
   }
 }
