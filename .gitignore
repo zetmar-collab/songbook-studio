@@ -1,6 +1,9 @@
 node_modules
 dist
 out
+# katalogi robocze do weryfikacji rozpakowanego pakietu MSIX
+_verify/
+_chk*/
 *.log
 .env
 .DS_Store
