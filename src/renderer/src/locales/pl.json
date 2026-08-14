@@ -71,6 +71,21 @@
     "done": "Wyeksportowano do {{path}}",
     "show": "Pokaż plik"
   },
+  "report": {
+    "button": "Zgłoś treść AI",
+    "title": "Zgłoś nieodpowiednią treść wygenerowaną przez AI",
+    "intro": "Jeśli akordy lub inna treść wygenerowana przez AI są nieodpowiednie, obraźliwe albo w inny sposób problematyczne — zgłoś to. Zgłoszenia pomagają poprawiać działanie aplikacji.",
+    "describe": "Opisz problem",
+    "describePlaceholder": "Co jest nie tak z wygenerowaną treścią?",
+    "included": "Treść dołączona do zgłoszenia",
+    "noContent": "(brak wygenerowanej treści)",
+    "providerLine": "Dostawca: {{provider}} · Model: {{model}}",
+    "privacy": "Nic nie jest wysyłane automatycznie. Otworzy się Twój program pocztowy z gotową wiadomością — przed wysłaniem możesz ją przejrzeć i zmienić.",
+    "send": "Przygotuj e-mail",
+    "github": "Zgłoś na GitHubie",
+    "cancel": "Anuluj",
+    "opened": "Otwarto wiadomość ze zgłoszeniem — sprawdź program pocztowy."
+  },
   "exportAll": {
     "title": "Eksport całego śpiewnika",
     "pdf": "Cały śpiewnik → PDF",

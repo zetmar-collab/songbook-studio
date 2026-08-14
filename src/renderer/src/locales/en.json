@@ -70,6 +70,21 @@
     "done": "Exported to {{path}}",
     "show": "Show file"
   },
+  "report": {
+    "button": "Report AI content",
+    "title": "Report inappropriate AI-generated content",
+    "intro": "If the chords or any other AI-generated content are inappropriate, offensive or otherwise problematic, please report it. Reports help improve the app.",
+    "describe": "Describe the problem",
+    "describePlaceholder": "What is wrong with the generated content?",
+    "included": "Content included in the report",
+    "noContent": "(no generated content)",
+    "providerLine": "Provider: {{provider}} · Model: {{model}}",
+    "privacy": "Nothing is sent automatically. Your email client opens with a prepared message — you can review and edit it before sending.",
+    "send": "Prepare email",
+    "github": "Report on GitHub",
+    "cancel": "Cancel",
+    "opened": "Report message opened — check your email client."
+  },
   "exportAll": {
     "title": "Export whole songbook",
     "pdf": "Whole songbook → PDF",

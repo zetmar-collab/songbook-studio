@@ -4,6 +4,7 @@ import type { Song } from '../../../preload/index.d'
 import type { ToastState } from './Toast'
 import VoiceNotes from './VoiceNotes'
 import Versions from './Versions'
+import ReportAiModal from './ReportAiModal'
 import { transposeBracketed, transposeKey } from '../lib/transpose'
 
 type Tab = 'lyrics' | 'chords' | 'notes' | 'voice' | 'versions'
@@ -22,6 +23,8 @@ export default function Editor({ song, onChanged, onDeleted, showToast }: Props)
   const [tab, setTab] = useState<Tab>('lyrics')
   const [generating, setGenerating] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
+  const [aiInfo, setAiInfo] = useState({ provider: '', model: '' })
   const saveTimer = useRef<number | null>(null)
 
   useEffect(() => {
@@ -112,6 +115,17 @@ export default function Editor({ song, onChanged, onDeleted, showToast }: Props)
     }
     setDraft(next)
     await save(next)
+  }
+
+  /** Otwiera zgłoszenie treści AI, doczytując aktualnego dostawcę i model. */
+  const openReport = async (): Promise<void> => {
+    const s = await window.api.settings.getAll()
+    const provider = s.ai_provider || 'openrouter'
+    setAiInfo({
+      provider,
+      model: (provider === 'gemini' ? s.gemini_model : s.openrouter_model) || ''
+    })
+    setReportOpen(true)
   }
 
   const doExport = async (format: 'pdf' | 'docx' | 'md'): Promise<void> => {
@@ -226,6 +240,11 @@ export default function Editor({ song, onChanged, onDeleted, showToast }: Props)
                 ♯ +1
               </button>
               {draft.key && <span className="badge">{draft.key}</span>}
+              <div className="spacer" />
+              {/* Wymagane przez polityke Sklepu 11.16 — zglaszanie tresci z AI */}
+              <button className="btn btn-report" onClick={openReport}>
+                ⚠️ {t('report.button')}
+              </button>
             </div>
             <textarea
               className="text-area"
@@ -258,6 +277,16 @@ export default function Editor({ song, onChanged, onDeleted, showToast }: Props)
           />
         )}
       </div>
+
+      {reportOpen && (
+        <ReportAiModal
+          content={draft.chords}
+          provider={aiInfo.provider}
+          model={aiInfo.model}
+          onClose={() => setReportOpen(false)}
+          showToast={showToast}
+        />
+      )}
     </main>
   )
 }

@@ -108,6 +108,47 @@ export function registerIpc(): void {
     shell.showItemInFolder(filePath)
   })
 
+  // ----- Zglaszanie nieodpowiednich tresci wygenerowanych przez AI -----
+  // Wymagane przez polityke Sklepu Microsoft 11.16 (Live Generative AI Content).
+  // Adres budowany jest tutaj, a nie w rendererze — renderer nie moze otworzyc
+  // dowolnego URL-a, przekazuje wylacznie tresc zgloszenia.
+  ipcMain.handle(
+    'report:ai',
+    async (
+      _e,
+      payload: { description: string; content: string; provider: string; model: string }
+    ) => {
+      const lines = [
+        'Zgloszenie nieodpowiedniej tresci wygenerowanej przez AI',
+        '(AI-generated content report)',
+        '',
+        `Aplikacja / App: Songbook Studio ${app.getVersion()}`,
+        `Dostawca / Provider: ${payload.provider || '(nieznany)'}`,
+        `Model: ${payload.model || '(nieznany)'}`,
+        '',
+        'Opis problemu / Problem description:',
+        payload.description || '(nie podano)',
+        '',
+        'Zgloszona tresc / Reported content:',
+        payload.content || '(brak)'
+      ]
+      const url =
+        'mailto:zetmar@gmail.com' +
+        '?subject=' +
+        encodeURIComponent('Songbook Studio — zgloszenie tresci AI / AI content report') +
+        '&body=' +
+        encodeURIComponent(lines.join('\n'))
+      await shell.openExternal(url)
+      return { ok: true }
+    }
+  )
+
+  /** Alternatywny kanal zgloszenia — publiczny tracker projektu. */
+  ipcMain.handle('report:issues', async () => {
+    await shell.openExternal('https://github.com/zetmar-collab/songbook-studio/issues/new')
+    return { ok: true }
+  })
+
   // ----- Eksport zbiorczy całego katalogu -----
   ipcMain.handle('export:all', async (_e, format: 'pdf' | 'docx' | 'md') => {
     const songs = db.listSongs()

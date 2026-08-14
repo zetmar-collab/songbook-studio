@@ -390,6 +390,29 @@ select:focus {
   padding: 16px 20px;
   min-height: 0;
 }
+/* Zgłaszanie treści wygenerowanych przez AI (polityka Sklepu 11.16) */
+.btn-report {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.btn-report:hover {
+  background: rgba(229, 72, 77, 0.12);
+}
+.report-preview {
+  max-height: 160px;
+  overflow: auto;
+  margin: 0;
+  padding: 10px;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .transpose-bar {
   display: flex;
   align-items: center;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ToastState } from './Toast'
+import ReportAiModal from './ReportAiModal'
 
 interface Props {
   onClose: () => void
@@ -34,6 +35,7 @@ export default function SettingsModal({
   >([])
   const [modelsLoading, setModelsLoading] = useState(false)
   const [modelsMsg, setModelsMsg] = useState('')
+  const [reportOpen, setReportOpen] = useState(false)
 
   useEffect(() => {
     window.api.settings.getAll().then((s) => {
@@ -286,6 +288,10 @@ export default function SettingsModal({
           <button className="btn" onClick={testAi} disabled={testing}>
             {testing ? t('settings.testing') : '🔌 ' + t('settings.testAi')}
           </button>
+          {/* Wymagane przez polityke Sklepu 11.16 — zglaszanie tresci z AI */}
+          <button className="btn btn-report" onClick={() => setReportOpen(true)}>
+            ⚠️ {t('report.button')}
+          </button>
 
           <div className="field" style={{ borderTop: '1px solid var(--border)', paddingTop: 14 }}>
             <label>💾 {t('backup.title')}</label>
@@ -361,6 +367,16 @@ export default function SettingsModal({
           </button>
         </div>
       </div>
+
+      {reportOpen && (
+        <ReportAiModal
+          content=""
+          provider={provider}
+          model={(provider === 'gemini' ? settings.gemini_model : settings.openrouter_model) || ''}
+          onClose={() => setReportOpen(false)}
+          showToast={showToast}
+        />
+      )}
     </div>
   )
 }

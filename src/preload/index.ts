@@ -64,6 +64,11 @@ const api = {
   },
   shell: {
     showItem: (filePath: string) => ipcRenderer.invoke('shell:showItem', filePath)
+  },
+  report: {
+    ai: (payload: { description: string; content: string; provider: string; model: string }) =>
+      ipcRenderer.invoke('report:ai', payload),
+    issues: () => ipcRenderer.invoke('report:issues')
   }
 }
 
