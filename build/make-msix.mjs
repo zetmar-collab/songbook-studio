@@ -24,14 +24,14 @@ const pkgJson = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'))
 // Wartosci zarezerwowane w Partner Center (Product management -> Product identity).
 // Sa jawne — trafiaja do manifestu kazdego opublikowanego pakietu.
 // W razie potrzeby mozna je nadpisac zmiennymi srodowiskowymi.
-const IDENTITY_NAME = process.env.MSIX_IDENTITY_NAME || 'MarekZettel-zetmar.SongbookStudio'
+const IDENTITY_NAME = process.env.MSIX_IDENTITY_NAME || 'MarekZettel-zetmar.Songbook-Studio'
 const PUBLISHER = process.env.MSIX_PUBLISHER || 'CN=15A53D32-C868-48EE-B700-5DBB5449CA1B'
 const PUBLISHER_DISPLAY = process.env.MSIX_PUBLISHER_DISPLAY || 'Marek Zettel - zetmar'
 
 // UWAGA: musi byc DOKLADNIE jedna z nazw zarezerwowanych w Partner Center
 // (Product management -> Manage app names). Sklep odrzuca pakiet, jesli
 // Package/Properties/DisplayName nie odpowiada zadnej zarezerwowanej nazwie.
-const DISPLAY_NAME = process.env.MSIX_DISPLAY_NAME || 'Songbook Studio'
+const DISPLAY_NAME = process.env.MSIX_DISPLAY_NAME || 'Songbook-Studio'
 const DESCRIPTION =
   'Organizuj teksty piosenek, akordy i pomysly na utwory. Dziala offline, z opcjonalnym generowaniem akordow przez AI.'
 const EXECUTABLE = 'Songbook Studio.exe'
