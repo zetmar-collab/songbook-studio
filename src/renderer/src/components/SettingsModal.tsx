@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ToastState } from './Toast'
 import ReportAiModal from './ReportAiModal'
+import { errorMessage } from '../lib/format'
+import { flushAll } from '../lib/flush'
 
 interface Props {
   onClose: () => void
   onLanguage: (lng: string) => void
   onThemeChanged: (dark: boolean) => void
+  onRestored: () => Promise<void>
   showToast: (t: ToastState) => void
 }
 
@@ -22,6 +25,7 @@ export default function SettingsModal({
   onClose,
   onLanguage,
   onThemeChanged,
+  onRestored,
   showToast
 }: Props): JSX.Element {
   const { t, i18n } = useTranslation()
@@ -46,27 +50,31 @@ export default function SettingsModal({
     const unsub = window.api.update.onStatus((p) => {
       const state = p.state as string
       if (state === 'checking') setUpdateMsg(t('update.checking'))
-      else if (state === 'available') setUpdateMsg(t('update.available', { version: p.version }))
-      else if (state === 'progress') setUpdateMsg(t('update.progress', { percent: p.percent }))
-      else if (state === 'downloaded') setUpdateMsg(t('update.downloaded', { version: p.version }))
+      else if (state === 'available') setUpdateMsg(t('update.available', { version: String(p.version ?? '') }))
+      else if (state === 'progress') setUpdateMsg(t('update.progress', { percent: String(p.percent ?? '') }))
+      else if (state === 'downloaded') setUpdateMsg(t('update.downloaded', { version: String(p.version ?? '') }))
       else if (state === 'none') setUpdateMsg(t('update.none'))
       else if (state === 'dev') setUpdateMsg(t('update.dev'))
-      else if (state === 'error') setUpdateMsg(t('update.error', { message: p.message }))
+      else if (state === 'error') setUpdateMsg(t('update.error', { message: String(p.message ?? '') }))
     })
     return unsub
   }, [t])
 
   const checkUpdate = async (): Promise<void> => {
     setUpdateMsg(t('update.checking'))
-    const res = await window.api.update.check()
-    if (res.state === 'dev') setUpdateMsg(t('update.dev'))
-    else if (res.state === 'store') setUpdateMsg(t('update.store'))
-    else if (res.state === 'error') setUpdateMsg(t('update.error', { message: res.message }))
+    try {
+      const res = await window.api.update.check()
+      if (res.state === 'dev') setUpdateMsg(t('update.dev'))
+      else if (res.state === 'store') setUpdateMsg(t('update.store'))
+      else if (res.state === 'error') setUpdateMsg(t('update.error', { message: res.message ?? '' }))
+    } catch (e) {
+      setUpdateMsg(t('update.error', { message: errorMessage(e) }))
+    }
   }
 
   const setField = (key: string, value: string): void => {
     setSettings((s) => ({ ...s, [key]: value }))
-    window.api.settings.set(key, value)
+    window.api.settings.set(key, value).catch((e) => showToast({ message: errorMessage(e), type: 'error' }))
   }
 
   const changeTheme = async (value: ThemeSource): Promise<void> => {
@@ -81,11 +89,11 @@ export default function SettingsModal({
     setModelsLoading(true)
     setModelsMsg('')
     try {
-      const models = await window.api.ai.openrouterModels(key)
+      const models = await window.api.ai.openrouterModels()
       setFreeModels(models)
       setModelsMsg(t('settings.modelsLoaded', { count: models.length }))
     } catch (e) {
-      setModelsMsg(t('settings.modelsError', { message: e instanceof Error ? e.message : String(e) }))
+      setModelsMsg(t('settings.modelsError', { message: errorMessage(e) }))
     } finally {
       setModelsLoading(false)
     }
@@ -104,17 +112,21 @@ export default function SettingsModal({
     try {
       const res = await window.api.backup.create()
       if (res.canceled) return
-      showToast({ message: t('backup.created', { path: res.filePath }), duration: 6000 })
+      showToast({
+        message: t('backup.created', { path: res.filePath, songs: res.songs ?? 0, voices: res.voiceFiles ?? 0 }),
+        action: { label: t('export.show'), onClick: () => void window.api.shell.showItem(res.filePath!) },
+        duration: 8000
+      })
     } catch (e) {
-      showToast({ message: String(e instanceof Error ? e.message : e), type: 'error' })
+      showToast({ message: errorMessage(e), type: 'error' })
     }
   }
 
   const chooseBackupDir = async (): Promise<void> => {
     const res = await window.api.backup.chooseDir()
     if (res.canceled) return
-    setSettings((s) => ({ ...s, backup_dir: res.dir }))
-    showToast({ message: t('backup.folderSet', { path: res.dir }) })
+    setSettings((s) => ({ ...s, backup_dir: res.dir ?? '' }))
+    showToast({ message: t('backup.folderSet', { path: res.dir ?? '' }) })
   }
 
   const resetBackupDir = async (): Promise<void> => {
@@ -125,21 +137,28 @@ export default function SettingsModal({
   const restoreBackup = async (): Promise<void> => {
     if (!confirm(t('backup.restoreConfirm'))) return
     try {
+      await flushAll() // niezapisane zmiany nie mogą trafić do przywróconej bazy
       const res = await window.api.backup.restore()
       if (res.canceled) return
-      // przeładuj, aby odświeżyć całą listę utworów z nowej bazy
-      window.location.reload()
+      await onRestored()
+      showToast({ message: t('backup.restored', { songs: res.songs ?? 0 }), duration: 6000 })
+      onClose()
     } catch (e) {
-      showToast({ message: String(e instanceof Error ? e.message : e), type: 'error' })
+      showToast({ message: errorMessage(e), type: 'error' })
     }
   }
 
   const testAi = async (): Promise<void> => {
     setTesting(true)
-    const res = await window.api.ai.test()
-    setTesting(false)
-    if (res.ok) showToast({ message: t('settings.testOk') })
-    else showToast({ message: t('settings.testFail', { message: res.message }), type: 'error', duration: 6000 })
+    try {
+      const res = await window.api.ai.test()
+      if (res.ok) showToast({ message: t('settings.testOk') })
+      else showToast({ message: t('settings.testFail', { message: res.message }), type: 'error', duration: 6000 })
+    } catch (e) {
+      showToast({ message: t('settings.testFail', { message: errorMessage(e) }), type: 'error', duration: 6000 })
+    } finally {
+      setTesting(false)
+    }
   }
 
   return (

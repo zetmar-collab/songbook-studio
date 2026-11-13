@@ -40,17 +40,21 @@ Po instalacji aplikacja działa offline. Aby korzystać z generowania akordów p
 ## Funkcje
 
 - 📚 **Katalog utworów** — tytuł, wykonawca, tonacja, tagi, ulubione
-- 🕘 **Wersjonowanie tekstów** — zapisuj migawki i przywracaj wcześniejsze wersje
-- 🎙 **Notatki głosowe** — nagrywaj pomysły na melodię prosto w aplikacji
+- 🕘 **Wersjonowanie tekstów** — migawki ręczne i automatyczne (przed AI, transpozycją, przywracaniem), podgląd różnic, „Cofnij” po operacjach destrukcyjnych
+- 🎙 **Notatki głosowe** — nagrywanie, zmiana nazwy, opis, znaczniki czasu z przeskokiem do miejsca w nagraniu
+- 🎤 **Tryb sceniczny** — duża czcionka, autoprzewijanie, nawigacja strzałkami po setliście
+- 📋 **Setlisty** — kolejność utworów, osobna transpozycja każdego z nich, eksport PDF/DOCX/MD
+- 🎼 **Podgląd „akordy nad tekstem”** oraz sugestia kapodastra
+- 🎵 **Zakładka Suno** — tekst bez akordów (z angielskimi tagami sekcji) i pole stylu do skopiowania
 - ✨ **Automatyczne akordy z AI** — OpenRouter lub Google Gemini
 - 🆓 **Lista darmowych modeli OpenRouter** — po wklejeniu klucza API pobierana automatycznie do wyboru z listy
-- 🎚 **Transpozycja akordów** — przyciski ♭−1 / ♯+1 transponują akordy w nawiasach `[ ]` i tonację
-- 📥 **Import z Worda (.docx)** — wczytaj istniejący tekst jako nowy utwór (bez zewnętrznych zależności)
-- 📄 **Eksport do PDF, DOCX i Markdown** (pojedynczy utwór)
+- 🎚 **Transpozycja akordów** — ♭−1 / ♯+1 lub wybór tonacji docelowej; spójny zapis ♯/♭, etykiety sekcji (`[Refren]`) nie są ruszane
+- 📥 **Import wielu plików naraz** — Word (.docx), tekst (.txt, .md, .crd) i ChordPro (.cho, .chordpro, .pro)
+- 📄 **Eksport do PDF, DOCX, Markdown i ChordPro** (pojedynczy utwór; akordy nad tekstem)
 - 📖 **Eksport zbiorczy** — cały śpiewnik do jednego PDF/DOCX/MD (okładka + spis treści)
 - ⬆ **Automatyczne aktualizacje** (electron-updater)
-- 🔍 **Wyszukiwanie pełnotekstowe** (SQLite FTS5) po tytule, tekście i akordach — także bez polskich znaków diakrytycznych
-- 💾 **Kopie zapasowe bazy** — ręczne (utwórz / przywróć) oraz automatyczne przy zamknięciu (10 ostatnich)
+- 🔍 **Wyszukiwanie** po tytule, tekście, akordach i notatkach — bez rozróżniania wielkości liter i polskich znaków (także „ł”), po fragmentach słów, z podświetleniem trafień
+- 💾 **Kopie zapasowe** — pełna kopia ZIP (baza + nagrania głosowe), przywracanie z ZIP lub samej bazy oraz automatyczna kopia bazy przy zamknięciu (10 ostatnich)
 - 🌗 **Jasny / ciemny / systemowy motyw**
 - 🌍 **Język PL / EN**
 
@@ -230,12 +234,16 @@ Wszystko lokalnie, w katalogu danych aplikacji:
 ```
 src/
   main/        Proces główny Electrona (Node)
-    db.ts        SQLite + FTS5, CRUD, wersje, notatki, ustawienia
+    database.ts  SQLite: migracje, utwory, wersje, nagrania, setlisty, wyszukiwanie
+    db.ts        Powiązanie z Electronem: ścieżki, kopie, bezpieczne nazwy plików nagrań
+    backup.ts    Pełna kopia ZIP (baza + nagrania) i przywracanie
+    import.ts    Import .docx / .txt / ChordPro
     ai.ts        Integracja OpenRouter / Gemini
     export.ts    Eksport PDF (printToPDF) / DOCX (docx) / Markdown
     ipc.ts       Handlery IPC
     index.ts     Okno, motyw
-  preload/     Bezpieczny most contextBridge (contextIsolation ON)
+  shared/      Czysta logika współdzielona i testowana: akordy, tonacje, wyszukiwanie, diff, ChordPro, Suno
+  preload/     Bezpieczny most contextBridge (contextIsolation + sandbox)
   renderer/    UI React + i18next + motywy CSS
 ```
 
@@ -315,13 +323,17 @@ After installation the app works offline. To use AI chord generation, paste an A
 - 🎙 **Voice notes** — record melody ideas right in the app
 - ✨ **AI chord generation** — OpenRouter or Google Gemini
 - 🆓 **Free OpenRouter models** — auto-fetched (with context limits) once you paste an API key
-- 🎚 **Chord transposition** — ♭−1 / ♯+1 transposes bracketed `[ ]` chords and the key
-- 📥 **Import from Word (.docx)** — load existing lyrics as a new song
-- 📄 **Export to PDF, DOCX and Markdown** (single song)
+- 🎚 **Chord transposition** — ♭−1 / ♯+1 or pick a target key; consistent ♯/♭ spelling, section labels (`[Chorus]`) are left alone
+- 📥 **Multi-file import** — Word (.docx), text (.txt, .md, .crd) and ChordPro (.cho, .chordpro, .pro)
+- 📄 **Export to PDF, DOCX, Markdown and ChordPro** (single song; chords above lyrics)
+- 🎤 **Stage mode** — big font, auto-scroll, arrow-key setlist navigation
+- 📋 **Setlists** — song order, per-song transposition, PDF/DOCX/MD export
+- 🎵 **Suno tab** — chord-free lyrics (optional English section tags) and a style field to copy
+- 🕘 **Automatic snapshots + Undo** before AI generation, transposing and version restore; version diff view
 - 📖 **Bulk export** — the whole songbook into one PDF/DOCX/MD (cover + table of contents)
 - ⬆ **Automatic updates** (electron-updater)
-- 🔍 **Full-text search** (SQLite FTS5), diacritics-insensitive
-- 💾 **Database backups** — manual (create / restore, custom folder) and automatic on close
+- 🔍 **Search** by title, lyrics, chords and notes — case- and diacritics-insensitive (including Polish “ł”), matches inside words, highlighted hits
+- 💾 **Backups** — full ZIP (database + voice recordings), restore from ZIP or database file, automatic database copy on close
 - 🌗 **Light / dark / system theme** · 🌍 **Polish / English UI**
 
 ## Build from source

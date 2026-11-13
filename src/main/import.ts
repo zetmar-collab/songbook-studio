@@ -1,65 +1,21 @@
-import { readFile } from 'fs/promises'
+// Import utworów z plików: .docx, .txt/.md/.crd (także akordy nad tekstem) oraz ChordPro.
+import { readFile, stat } from 'fs/promises'
 import { basename, extname } from 'path'
-import { inflateRawSync } from 'zlib'
+import { parseChordPro, parsePlainText, type ParsedSong } from '../shared/chordpro'
+import { readZipEntry } from './zip'
 
-/**
- * Wyciąga tekst z pliku .docx bez zewnętrznych zależności.
- * .docx to archiwum ZIP; interesuje nas wpis `word/document.xml`.
- * Parsujemy centralny katalog ZIP, dekompresujemy wpis (deflate)
- * i zamieniamy XML Worda na czysty tekst z zachowaniem podziału na linie.
- */
-export async function importDocxText(filePath: string): Promise<{ title: string; text: string }> {
-  const buf = await readFile(filePath)
-  const xml = extractZipEntry(buf, 'word/document.xml')
-  if (!xml) throw new Error('To nie jest poprawny plik .docx (brak word/document.xml).')
-  const text = docxXmlToText(xml.toString('utf-8'))
-  const title = basename(filePath, extname(filePath))
-  return { title, text }
-}
+const MAX_FILE_BYTES = 20 * 1024 * 1024
+const MAX_DOCUMENT_XML = 64 * 1024 * 1024
 
-function extractZipEntry(buf: Buffer, name: string): Buffer | null {
-  // Znajdź End Of Central Directory (EOCD): sygnatura PK\x05\x06
-  const EOCD_SIG = 0x06054b50
-  let eocd = -1
-  for (let i = buf.length - 22; i >= 0 && i > buf.length - 22 - 65536; i--) {
-    if (buf.readUInt32LE(i) === EOCD_SIG) {
-      eocd = i
-      break
-    }
-  }
-  if (eocd < 0) return null
+export const IMPORT_EXTENSIONS = ['docx', 'txt', 'md', 'crd', 'cho', 'chordpro', 'pro']
 
-  const cdCount = buf.readUInt16LE(eocd + 10)
-  let ptr = buf.readUInt32LE(eocd + 16) // offset centralnego katalogu
-
-  const CEN_SIG = 0x02014b50
-  for (let i = 0; i < cdCount; i++) {
-    if (buf.readUInt32LE(ptr) !== CEN_SIG) break
-    const method = buf.readUInt16LE(ptr + 10)
-    const compSize = buf.readUInt32LE(ptr + 20)
-    const nameLen = buf.readUInt16LE(ptr + 28)
-    const extraLen = buf.readUInt16LE(ptr + 30)
-    const commentLen = buf.readUInt16LE(ptr + 32)
-    const localOffset = buf.readUInt32LE(ptr + 42)
-    const entryName = buf.toString('utf-8', ptr + 46, ptr + 46 + nameLen)
-
-    if (entryName === name) {
-      // Przejdź do lokalnego nagłówka aby odczytać jego długości
-      const lNameLen = buf.readUInt16LE(localOffset + 26)
-      const lExtraLen = buf.readUInt16LE(localOffset + 28)
-      const dataStart = localOffset + 30 + lNameLen + lExtraLen
-      const compData = buf.subarray(dataStart, dataStart + compSize)
-      if (method === 0) return Buffer.from(compData) // brak kompresji
-      if (method === 8) return inflateRawSync(compData) // deflate
-      throw new Error(`Nieobsługiwana metoda kompresji ZIP: ${method}`)
-    }
-    ptr += 46 + nameLen + extraLen + commentLen
-  }
-  return null
-}
+// ---------- DOCX ----------
 
 function decodeEntities(s: string): string {
+  const cp = (n: number): string => (n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : '')
   return s
+    .replace(/&#x([0-9a-fA-F]+);/g, (_m, h: string) => cp(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_m, d: string) => cp(parseInt(d, 10)))
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
@@ -67,36 +23,103 @@ function decodeEntities(s: string): string {
     .replace(/&amp;/g, '&')
 }
 
-function docxXmlToText(xml: string): string {
-  let out = xml
-    // każdy akapit kończy się pojedynczym podziałem wiersza
-    .replace(/<\/w:p>/g, '\n')
-    .replace(/<w:br\s*\/?>/g, '\n')
-    .replace(/<w:tab\s*\/?>/g, '\t')
-
-  // wyciągnij tylko zawartość <w:t>...</w:t>
+/**
+ * Zamienia XML Worda na zwykły tekst. Rozpoznaje WYŁĄCZNIE znaczniki tekstu (<w:t>),
+ * tabulacji (<w:tab/>), łamania wiersza oraz końce akapitów i komórek tabeli —
+ * wszystko inne (np. <w:tabs>, <w:tbl>, <w:tcW>) jest ignorowane.
+ */
+export function docxXmlToText(xml: string): string {
   const parts: string[] = []
-  const re = /<w:t[^>]*>([\s\S]*?)<\/w:t>/g
+  const re =
+    /<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\s*\/>|<w:(?:br|cr)(?:\s[^>]*)?\/>|<\/w:p>|<\/w:tc>|<\/w:tr>/g
   let m: RegExpExecArray | null
-  let lastIndex = 0
-  const rebuilt: string[] = []
-  while ((m = re.exec(out)) !== null) {
-    // zachowaj znaki nowej linii pojawiające się między runami
-    const between = out.slice(lastIndex, m.index)
-    const newlines = (between.match(/\n/g) || []).join('')
-    rebuilt.push(newlines)
-    rebuilt.push(decodeEntities(m[1]))
-    lastIndex = re.lastIndex
+  while ((m = re.exec(xml)) !== null) {
+    const tag = m[0]
+    if (m[1] !== undefined) parts.push(decodeEntities(m[1]))
+    else if (tag.startsWith('<w:tab')) parts.push('\t')
+    else if (tag.startsWith('<w:br') || tag.startsWith('<w:cr')) parts.push('\n')
+    else if (tag === '</w:p>') parts.push('\n')
+    else if (tag === '</w:tc>') {
+      if (parts[parts.length - 1] === '\n') parts.pop()
+      parts.push('\t')
+    } else if (tag === '</w:tr>') {
+      if (parts[parts.length - 1] === '\t') parts.pop()
+      if (parts[parts.length - 1] !== '\n') parts.push('\n')
+    }
   }
-  const tail = out.slice(lastIndex)
-  rebuilt.push((tail.match(/\n/g) || []).join(''))
-
-  const text = rebuilt.join('')
-  // uporządkuj nadmiarowe puste linie
-  return text
+  return parts
+    .join('')
     .split('\n')
     .map((l) => l.replace(/\s+$/g, ''))
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
+}
+
+export async function importDocxText(filePath: string): Promise<{ title: string; text: string }> {
+  const buf = await readFile(filePath)
+  const xml = readZipEntry(buf, 'word/document.xml', { maxEntryBytes: MAX_DOCUMENT_XML })
+  if (!xml) throw new Error('To nie jest poprawny plik .docx (brak word/document.xml).')
+  return { title: basename(filePath, extname(filePath)), text: docxXmlToText(xml.toString('utf-8')) }
+}
+
+// ---------- Pliki tekstowe ----------
+
+/** UTF-8 / UTF-16 (z BOM) z awaryjnym odczytem w Windows-1250 (starsze polskie pliki). */
+export function decodeText(buf: Buffer): string {
+  if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xfe) return buf.toString('utf16le', 2)
+  if (buf.length >= 2 && buf[0] === 0xfe && buf[1] === 0xff) {
+    const swapped = Buffer.from(buf.subarray(2, 2 + ((buf.length - 2) & ~1)))
+    swapped.swap16()
+    return swapped.toString('utf16le')
+  }
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(buf)
+  } catch {
+    return new TextDecoder('windows-1250').decode(buf)
+  }
+}
+
+function looksLikeChordPro(text: string): boolean {
+  return /^\s*\{\s*(title|t|subtitle|st|artist|key|start_of_\w+|so[cvb])\b/im.test(text)
+}
+
+// ---------- Import wielu plików ----------
+
+export interface ImportedItem {
+  fileName: string
+  song: ParsedSong
+}
+
+export interface ImportResult {
+  items: ImportedItem[]
+  failed: Array<{ fileName: string; error: string }>
+}
+
+export async function importFiles(paths: string[]): Promise<ImportResult> {
+  const result: ImportResult = { items: [], failed: [] }
+  for (const filePath of paths) {
+    const fileName = basename(filePath)
+    try {
+      const ext = extname(filePath).slice(1).toLowerCase()
+      if (!IMPORT_EXTENSIONS.includes(ext)) throw new Error('Nieobsługiwany typ pliku.')
+      const info = await stat(filePath)
+      if (info.size > MAX_FILE_BYTES) throw new Error('Plik jest za duży (limit 20 MB).')
+
+      let song: ParsedSong
+      if (ext === 'docx') {
+        const { text } = await importDocxText(filePath)
+        song = parsePlainText(text)
+      } else {
+        const text = decodeText(await readFile(filePath))
+        const chordPro = ['cho', 'chordpro', 'pro'].includes(ext) || looksLikeChordPro(text)
+        song = chordPro ? parseChordPro(text) : parsePlainText(text)
+      }
+      if (!song.title) song.title = basename(filePath, extname(filePath))
+      result.items.push({ fileName, song })
+    } catch (e) {
+      result.failed.push({ fileName, error: e instanceof Error ? e.message : String(e) })
+    }
+  }
+  return result
 }

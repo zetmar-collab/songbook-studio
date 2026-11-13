@@ -6,25 +6,26 @@
   "sidebar": {
     "search": "Szukaj po tytule, tekście, akordach…",
     "newSong": "Nowy utwór",
-    "import": "Import z Worda",
+    "import": "Importuj pliki",
     "empty": "Brak utworów. Utwórz pierwszy!",
     "noResults": "Brak wyników dla „{{query}}”",
     "favorites": "Ulubione",
     "songs": "Utwory",
     "count_one": "{{count}} utwór",
     "count_few": "{{count}} utwory",
-    "count_many": "{{count}} utworów"
+    "count_many": "{{count}} utworów",
+    "setlists": "Setlisty",
+    "importHint": "Word (.docx), tekst (.txt, .md), ChordPro (.cho, .chordpro, .pro)",
+    "found_one": "Znaleziono {{count}} utwór",
+    "found_few": "Znaleziono {{count}} utwory",
+    "found_many": "Znaleziono {{count}} utworów",
+    "found_other": "Znaleziono {{count}} utworów"
   },
   "editor": {
     "titlePlaceholder": "Tytuł utworu",
     "artist": "Wykonawca / autor",
     "key": "Tonacja",
     "tags": "Tagi (po przecinku)",
-    "tabLyrics": "Tekst",
-    "tabChords": "Akordy",
-    "tabNotes": "Notatki",
-    "tabVoice": "Notatki głosowe",
-    "tabVersions": "Wersje",
     "lyricsPlaceholder": "Wpisz tutaj tekst piosenki…",
     "chordsPlaceholder": "Akordy pojawią się tutaj. Możesz je edytować ręcznie lub wygenerować z AI.",
     "notesPlaceholder": "Pomysły, inspiracje, struktura utworu…",
@@ -37,14 +38,33 @@
     "favorite": "Dodaj do ulubionych",
     "unfavorite": "Usuń z ulubionych",
     "selectSong": "Wybierz utwór z listy lub utwórz nowy",
-    "export": "Eksportuj"
+    "export": "Eksportuj",
+    "tab": {
+      "lyrics": "Tekst",
+      "chords": "Akordy",
+      "preview": "Podgląd",
+      "notes": "Notatki",
+      "suno": "Suno",
+      "voice": "Notatki głosowe",
+      "versions": "Wersje"
+    },
+    "saveError": "Nie udało się zapisać zmian: {{message}}",
+    "notSaved": "Błąd zapisu — spróbuję ponownie",
+    "undo": "Cofnij",
+    "transposed": "Akordy przetransponowane.",
+    "targetKey": "Do tonacji",
+    "capo": "Kapodaster na {{capo}}. progu — łatwiejsze chwyty",
+    "semitoneDown": "Półton w dół",
+    "semitoneUp": "Półton w górę",
+    "previewEmpty": "Brak akordów ani tekstu do pokazania."
   },
   "ai": {
     "generate": "Generuj akordy (AI)",
     "generating": "Generowanie…",
     "needLyrics": "Najpierw wpisz tekst piosenki.",
     "error": "Błąd AI: {{message}}",
-    "done": "Akordy wygenerowane"
+    "done": "Akordy wygenerowane",
+    "doneUndo": "Akordy wygenerowane. Poprzednią wersję zapisano automatycznie."
   },
   "voice": {
     "record": "Nagraj",
@@ -53,7 +73,14 @@
     "empty": "Brak notatek głosowych. Nagraj pomysł na melodię.",
     "delete": "Usuń nagranie",
     "titlePlaceholder": "Nazwa nagrania",
-    "micError": "Brak dostępu do mikrofonu."
+    "micError": "Brak dostępu do mikrofonu.",
+    "deleteConfirm": "Usunąć to nagranie? Tej operacji nie można cofnąć.",
+    "markerDefault": "Znacznik {{n}}",
+    "seek": "Przejdź do znacznika",
+    "removeMarker": "Usuń znacznik",
+    "markerLabel": "Opis znacznika",
+    "addMarker": "Dodaj znacznik",
+    "noteText": "Notatka do nagrania…"
   },
   "versions": {
     "create": "Zapisz wersję",
@@ -61,15 +88,23 @@
     "empty": "Brak zapisanych wersji. Zapisz migawkę tekstu i akordów.",
     "restore": "Przywróć",
     "delete": "Usuń",
-    "restoreConfirm": "Przywrócić tę wersję? Bieżący tekst i akordy zostaną nadpisane.",
-    "current": "bieżąca"
+    "restoreConfirm": "Przywrócić tę wersję? Bieżący stan zostanie najpierw zapisany automatycznie, więc będzie można to cofnąć.",
+    "current": "bieżąca",
+    "restored": "Wersja przywrócona. Poprzedni stan zapisano automatycznie.",
+    "showAuto": "Pokaż wersje automatyczne",
+    "auto": "auto",
+    "matchesCurrent": "zgodna z bieżącą",
+    "diff": "Różnice",
+    "noDiff": "Ta wersja jest taka sama jak bieżący tekst.",
+    "diffSummary": "Po przywróceniu: +{{added}} / −{{removed}} linii względem bieżącego tekstu."
   },
   "export": {
     "pdf": "Eksport do PDF",
     "docx": "Eksport do DOCX",
     "md": "Eksport do Markdown",
     "done": "Wyeksportowano do {{path}}",
-    "show": "Pokaż plik"
+    "show": "Pokaż plik",
+    "cho": "Eksport do ChordPro"
   },
   "report": {
     "button": "Zgłoś treść AI",
@@ -84,7 +119,8 @@
     "send": "Przygotuj e-mail",
     "github": "Zgłoś na GitHubie",
     "cancel": "Anuluj",
-    "opened": "Otwarto wiadomość ze zgłoszeniem — sprawdź program pocztowy."
+    "opened": "Otwarto wiadomość ze zgłoszeniem — sprawdź program pocztowy.",
+    "openedTruncated": "Otwarto wiadomość. Treść była długa, więc pełne zgłoszenie jest w schowku — wklej je do wiadomości."
   },
   "exportAll": {
     "title": "Eksport całego śpiewnika",
@@ -104,7 +140,8 @@
     "none": "Masz najnowszą wersję.",
     "dev": "Aktualizacje działają tylko w zainstalowanej wersji aplikacji.",
     "store": "Wersja ze Sklepu Microsoft — aktualizacje pobiera automatycznie Sklep.",
-    "error": "Błąd aktualizacji: {{message}}"
+    "error": "Błąd aktualizacji: {{message}}",
+    "restart": "Uruchom ponownie"
   },
   "backup": {
     "title": "Kopia zapasowa",
@@ -116,11 +153,12 @@
     "chooseDir": "Zmień folder",
     "resetDir": "Przywróć domyślny",
     "folderSet": "Folder kopii: {{path}}",
-    "created": "Kopia zapisana: {{path}}",
-    "restoreConfirm": "Przywrócić bazę z kopii? Wszystkie bieżące utwory zostaną zastąpione zawartością kopii.",
+    "created": "Kopia zapisana ({{songs}} utworów, {{voices}} nagrań): {{path}}",
+    "restoreConfirm": "Przywrócić dane z kopii? Wszystkie bieżące utwory i nagrania zostaną zastąpione zawartością kopii.",
     "autoOn": "Auto-kopia: wł.",
     "autoOff": "Auto-kopia: wył.",
-    "hint": "Przy zamknięciu aplikacji tworzona jest automatyczna kopia (zachowywanych jest 10 ostatnich)."
+    "hint": "Kopia (.zip) zawiera utwory i nagrania głosowe. Przy zamknięciu aplikacji tworzona jest też automatyczna kopia samej bazy (10 ostatnich).",
+    "restored": "Przywrócono kopię ({{songs}} utworów)."
   },
   "settings": {
     "title": "Ustawienia",
@@ -146,5 +184,65 @@
     "testFail": "Błąd: {{message}}",
     "close": "Zamknij",
     "keyHint": "Klucze są przechowywane lokalnie i zaszyfrowane mechanizmem systemu Windows."
+  },
+  "snapshot": {
+    "beforeAi": "Przed generowaniem AI",
+    "beforeTranspose": "Przed transpozycją",
+    "beforeRestore": "Przed przywróceniem wersji"
+  },
+  "stage": {
+    "title": "Tryb sceniczny",
+    "open": "Tryb sceniczny",
+    "prev": "Poprzedni utwór",
+    "next": "Następny utwór",
+    "smaller": "Mniejsza czcionka",
+    "bigger": "Większa czcionka",
+    "scroll": "Przewijanie",
+    "slower": "Wolniej",
+    "faster": "Szybciej",
+    "close": "Zamknij",
+    "keys": "← → zmiana utworu · Spacja przewijanie · + − rozmiar · Esc zamknij"
+  },
+  "setlists": {
+    "sidebarHint": "Setlisty to uporządkowane listy utworów na koncert lub próbę — z własną tonacją każdego utworu.",
+    "newName": "Nazwa nowej setlisty",
+    "create": "Utwórz setlistę",
+    "empty": "Brak setlist. Utwórz pierwszą!",
+    "select": "Wybierz setlistę z listy lub utwórz nową",
+    "name": "Nazwa setlisty",
+    "delete": "Usuń setlistę",
+    "deleteConfirm": "Usunąć setlistę „{{name}}”? Utwory pozostaną w śpiewniku.",
+    "count_one": "{{count}} utwór",
+    "count_few": "{{count}} utwory",
+    "count_many": "{{count}} utworów",
+    "count_other": "{{count}} utworów",
+    "emptyExport": "Setlista jest pusta.",
+    "addSong": "Dodaj utwór",
+    "add": "Dodaj",
+    "noItems": "Setlista jest pusta. Dodaj utwory powyżej.",
+    "keyHint": "Tonacja po transpozycji",
+    "moveUp": "Przesuń w górę",
+    "moveDown": "Przesuń w dół",
+    "remove": "Usuń z setlisty",
+    "transposeNote": "Transpozycja dotyczy tylko tej setlisty (tryb sceniczny i eksport) — sam utwór się nie zmienia."
+  },
+  "suno": {
+    "style": "Styl (prompt stylu Suno)",
+    "stylePlaceholder": "np. polski pop-rock, żeński wokal, 110 BPM, energiczny refren",
+    "styleCopied": "Styl skopiowany do schowka.",
+    "copyStyle": "Kopiuj styl",
+    "lyrics": "Tekst dla Suno (bez akordów)",
+    "englishTags": "Tłumacz etykiety sekcji na angielskie tagi ([Refren] → [Chorus])",
+    "empty": "Brak tekstu do skopiowania.",
+    "hint": "Akordy są usuwane, etykiety sekcji zostają jako tagi.",
+    "lyricsCopied": "Tekst skopiowany do schowka.",
+    "copyLyrics": "Kopiuj tekst"
+  },
+  "import": {
+    "done_one": "Zaimportowano {{count}} utwór.",
+    "done_few": "Zaimportowano {{count}} utwory.",
+    "done_many": "Zaimportowano {{count}} utworów.",
+    "done_other": "Zaimportowano {{count}} utworów.",
+    "failed": "Nie udało się: {{count}} ({{names}})."
   }
 }

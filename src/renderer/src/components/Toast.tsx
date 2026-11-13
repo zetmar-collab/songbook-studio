@@ -13,7 +13,11 @@ export default function Toast({
   onClose: () => void
 }): JSX.Element {
   return (
-    <div className={`toast ${toast.type === 'error' ? 'error' : ''}`} onClick={onClose}>
+    <div
+      className={`toast ${toast.type === 'error' ? 'error' : ''}`}
+      role={toast.type === 'error' ? 'alert' : 'status'}
+      onClick={onClose}
+    >
       <span>{toast.message}</span>
       {toast.action && (
         <button

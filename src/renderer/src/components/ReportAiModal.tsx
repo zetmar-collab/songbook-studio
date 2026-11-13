@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ToastState } from './Toast'
+import { errorMessage } from '../lib/format'
 
 interface Props {
   content: string
@@ -31,19 +32,23 @@ export default function ReportAiModal({
   const sendEmail = async (): Promise<void> => {
     setSending(true)
     try {
-      await window.api.report.ai({ description, content, provider, model })
-      showToast({ message: t('report.opened'), duration: 6000 })
+      const res = await window.api.report.ai({ description, content, provider, model })
+      showToast({ message: t(res.truncated ? 'report.openedTruncated' : 'report.opened'), duration: 8000 })
       onClose()
     } catch (e) {
-      showToast({ message: String(e instanceof Error ? e.message : e), type: 'error' })
+      showToast({ message: errorMessage(e), type: 'error' })
     } finally {
       setSending(false)
     }
   }
 
   const openIssues = async (): Promise<void> => {
-    await window.api.report.issues()
-    onClose()
+    try {
+      await window.api.report.issues()
+      onClose()
+    } catch (e) {
+      showToast({ message: errorMessage(e), type: 'error' })
+    }
   }
 
   return (

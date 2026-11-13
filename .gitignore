@@ -8,3 +8,5 @@ _chk*/
 .env
 .DS_Store
 .vite
+out-test
+_shots

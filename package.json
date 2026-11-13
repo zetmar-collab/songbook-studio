@@ -1,6 +1,6 @@
 {
   "name": "songbook-studio",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Desktopowa aplikacja do organizowania tekstów piosenek, akordów i pomysłów na utwory. Działa offline, z generowaniem akordów przez AI.",
   "main": "./out/main/index.js",
   "author": "Marek",
@@ -16,7 +16,10 @@
     "dist": "electron-vite build && electron-builder --win --x64",
     "dist:portable": "electron-vite build && electron-builder --win portable",
     "icons": "node build/generate-icon.mjs && node build/generate-appx-assets.mjs",
-    "dist:store": "electron-vite build && electron-builder --win dir --publish never && node build/make-msix.mjs"
+    "dist:store": "electron-vite build && electron-builder --win dir --publish never && node build/make-msix.mjs",
+    "test": "vitest run",
+    "test:db": "node build/run-db-tests.mjs",
+    "ci": "npm run typecheck && npm test && npm run test:db && npm run build"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",
@@ -36,6 +39,7 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^15.4.0",
     "typescript": "^5.7.3",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vitest": "^2.1.9"
   }
 }

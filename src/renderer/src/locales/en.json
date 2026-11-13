@@ -6,24 +6,23 @@
   "sidebar": {
     "search": "Search title, lyrics, chords…",
     "newSong": "New song",
-    "import": "Import from Word",
+    "import": "Import files",
     "empty": "No songs yet. Create your first!",
     "noResults": "No results for “{{query}}”",
     "favorites": "Favorites",
     "songs": "Songs",
     "count_one": "{{count}} song",
-    "count_other": "{{count}} songs"
+    "count_other": "{{count}} songs",
+    "setlists": "Setlists",
+    "importHint": "Word (.docx), text (.txt, .md), ChordPro (.cho, .chordpro, .pro)",
+    "found_one": "{{count}} song found",
+    "found_other": "{{count}} songs found"
   },
   "editor": {
     "titlePlaceholder": "Song title",
     "artist": "Artist / author",
     "key": "Key",
     "tags": "Tags (comma separated)",
-    "tabLyrics": "Lyrics",
-    "tabChords": "Chords",
-    "tabNotes": "Notes",
-    "tabVoice": "Voice notes",
-    "tabVersions": "Versions",
     "lyricsPlaceholder": "Type the song lyrics here…",
     "chordsPlaceholder": "Chords will appear here. Edit manually or generate with AI.",
     "notesPlaceholder": "Ideas, inspiration, song structure…",
@@ -36,14 +35,33 @@
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
     "selectSong": "Select a song from the list or create a new one",
-    "export": "Export"
+    "export": "Export",
+    "tab": {
+      "lyrics": "Lyrics",
+      "chords": "Chords",
+      "preview": "Preview",
+      "notes": "Notes",
+      "suno": "Suno",
+      "voice": "Voice notes",
+      "versions": "Versions"
+    },
+    "saveError": "Could not save changes: {{message}}",
+    "notSaved": "Save failed — will retry",
+    "undo": "Undo",
+    "transposed": "Chords transposed.",
+    "targetKey": "To key",
+    "capo": "Capo on fret {{capo}} — easier shapes",
+    "semitoneDown": "Semitone down",
+    "semitoneUp": "Semitone up",
+    "previewEmpty": "No chords or lyrics to show."
   },
   "ai": {
     "generate": "Generate chords (AI)",
     "generating": "Generating…",
     "needLyrics": "Please enter the lyrics first.",
     "error": "AI error: {{message}}",
-    "done": "Chords generated"
+    "done": "Chords generated",
+    "doneUndo": "Chords generated. The previous version was saved automatically."
   },
   "voice": {
     "record": "Record",
@@ -52,7 +70,14 @@
     "empty": "No voice notes. Record a melody idea.",
     "delete": "Delete recording",
     "titlePlaceholder": "Recording name",
-    "micError": "No microphone access."
+    "micError": "No microphone access.",
+    "deleteConfirm": "Delete this recording? This cannot be undone.",
+    "markerDefault": "Marker {{n}}",
+    "seek": "Jump to marker",
+    "removeMarker": "Remove marker",
+    "markerLabel": "Marker label",
+    "addMarker": "Add marker",
+    "noteText": "Note about this recording…"
   },
   "versions": {
     "create": "Save version",
@@ -60,15 +85,23 @@
     "empty": "No saved versions. Snapshot your lyrics and chords.",
     "restore": "Restore",
     "delete": "Delete",
-    "restoreConfirm": "Restore this version? Current lyrics and chords will be overwritten.",
-    "current": "current"
+    "restoreConfirm": "Restore this version? The current state is saved automatically first, so you can undo this.",
+    "current": "current",
+    "restored": "Version restored. The previous state was saved automatically.",
+    "showAuto": "Show automatic versions",
+    "auto": "auto",
+    "matchesCurrent": "matches current",
+    "diff": "Changes",
+    "noDiff": "This version is identical to the current text.",
+    "diffSummary": "After restoring: +{{added}} / −{{removed}} lines compared to the current text."
   },
   "export": {
     "pdf": "Export to PDF",
     "docx": "Export to DOCX",
     "md": "Export to Markdown",
     "done": "Exported to {{path}}",
-    "show": "Show file"
+    "show": "Show file",
+    "cho": "Export to ChordPro"
   },
   "report": {
     "button": "Report AI content",
@@ -83,7 +116,8 @@
     "send": "Prepare email",
     "github": "Report on GitHub",
     "cancel": "Cancel",
-    "opened": "Report message opened — check your email client."
+    "opened": "The report message was opened — check your mail app.",
+    "openedTruncated": "The message was opened. The content was long, so the full report is on your clipboard — paste it into the message."
   },
   "exportAll": {
     "title": "Export whole songbook",
@@ -103,7 +137,8 @@
     "none": "You have the latest version.",
     "dev": "Updates only work in the installed app.",
     "store": "Microsoft Store build — updates are handled automatically by the Store.",
-    "error": "Update error: {{message}}"
+    "error": "Update error: {{message}}",
+    "restart": "Restart"
   },
   "backup": {
     "title": "Backup",
@@ -115,11 +150,12 @@
     "chooseDir": "Change folder",
     "resetDir": "Reset to default",
     "folderSet": "Backup folder: {{path}}",
-    "created": "Backup saved: {{path}}",
-    "restoreConfirm": "Restore database from backup? All current songs will be replaced with the backup contents.",
+    "created": "Backup saved ({{songs}} songs, {{voices}} recordings): {{path}}",
+    "restoreConfirm": "Restore data from the backup? All current songs and recordings will be replaced by the backup's contents.",
     "autoOn": "Auto-backup: on",
     "autoOff": "Auto-backup: off",
-    "hint": "An automatic backup is created on app close (the last 10 are kept)."
+    "hint": "The backup (.zip) contains your songs and voice recordings. An automatic backup of the database alone is also made when the app closes (last 10 kept).",
+    "restored": "Backup restored ({{songs}} songs)."
   },
   "settings": {
     "title": "Settings",
@@ -145,5 +181,61 @@
     "testFail": "Error: {{message}}",
     "close": "Close",
     "keyHint": "Keys are stored locally and encrypted using the Windows OS mechanism."
+  },
+  "snapshot": {
+    "beforeAi": "Before AI generation",
+    "beforeTranspose": "Before transposing",
+    "beforeRestore": "Before restoring a version"
+  },
+  "stage": {
+    "title": "Stage mode",
+    "open": "Stage mode",
+    "prev": "Previous song",
+    "next": "Next song",
+    "smaller": "Smaller font",
+    "bigger": "Larger font",
+    "scroll": "Auto-scroll",
+    "slower": "Slower",
+    "faster": "Faster",
+    "close": "Close",
+    "keys": "← → change song · Space scroll · + − size · Esc close"
+  },
+  "setlists": {
+    "sidebarHint": "Setlists are ordered song lists for a gig or rehearsal — each song with its own key.",
+    "newName": "New setlist name",
+    "create": "Create setlist",
+    "empty": "No setlists yet. Create the first one!",
+    "select": "Pick a setlist or create a new one",
+    "name": "Setlist name",
+    "delete": "Delete setlist",
+    "deleteConfirm": "Delete the setlist \"{{name}}\"? The songs stay in your songbook.",
+    "count_one": "{{count}} song",
+    "count_other": "{{count}} songs",
+    "emptyExport": "The setlist is empty.",
+    "addSong": "Add a song",
+    "add": "Add",
+    "noItems": "The setlist is empty. Add songs above.",
+    "keyHint": "Key after transposing",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove from setlist",
+    "transposeNote": "Transposing applies to this setlist only (stage mode and export) — the song itself is unchanged."
+  },
+  "suno": {
+    "style": "Style (Suno style prompt)",
+    "stylePlaceholder": "e.g. indie pop-rock, female vocals, 110 BPM, anthemic chorus",
+    "styleCopied": "Style copied to clipboard.",
+    "copyStyle": "Copy style",
+    "lyrics": "Lyrics for Suno (no chords)",
+    "englishTags": "Translate section labels to English tags ([Refren] → [Chorus])",
+    "empty": "No lyrics to copy.",
+    "hint": "Chords are removed; section labels stay as tags.",
+    "lyricsCopied": "Lyrics copied to clipboard.",
+    "copyLyrics": "Copy lyrics"
+  },
+  "import": {
+    "done_one": "Imported {{count}} song.",
+    "done_other": "Imported {{count}} songs.",
+    "failed": "Failed: {{count}} ({{names}})."
   }
 }

@@ -17,6 +17,20 @@ files:
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml,package-lock.json}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  # Katalogi robocze i testowe nie trafiają do instalatora
+  - '!src/**'
+  - '!{_verify,_chk*,_shots,docs,tests,out-test,dist,.github,.claude,graphify-out}/**'
+  - '!{vitest.config.ts,LICENSE}'
+  - '!build/{appx,lib}/**'
+  - '!build/*.{mjs,py}'
+  # better-sqlite3: zostaje tylko gotowy plik .node, bez kodu źródłowego SQLite (kilkanaście MB)
+  - '!node_modules/better-sqlite3/{deps,src}/**'
+  - '!**/*.{pdb,map,ts}'
+
+# Tylko języki interfejsu, które obsługuje aplikacja (pl/en) — reszta to zbędne pliki locale Chromium
+electronLanguages:
+  - pl
+  - en-US
 
 asarUnpack:
   - resources/**

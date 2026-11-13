@@ -1,117 +1,99 @@
 import { getSetting } from './db'
+import { buildPrompt, cleanAiOutput, type ChordRequest } from './aiText'
 
-export interface ChordRequest {
-  title: string
-  artist: string
-  key: string
-  lyrics: string
-  language: 'pl' | 'en'
+export type { ChordRequest }
+
+const GENERATE_TIMEOUT_MS = 60_000
+const MODELS_TIMEOUT_MS = 20_000
+const APP_URL = 'https://zetmar-collab.github.io/songbook-studio/'
+
+// Identyfikatory modeli trafiają do adresu URL — przepuszczamy tylko bezpieczne znaki.
+const OPENROUTER_MODEL_RE = /^[\w.\-:/]{1,120}$/
+const GEMINI_MODEL_RE = /^[\w.\-]{1,80}$/
+
+async function timedFetch(url: string, init: RequestInit, ms: number): Promise<Response> {
+  try {
+    return await fetch(url, { ...init, signal: AbortSignal.timeout(ms) })
+  } catch (e) {
+    const name = e instanceof Error ? e.name : ''
+    if (name === 'TimeoutError' || name === 'AbortError') {
+      throw new Error(`Dostawca AI nie odpowiedział w ciągu ${Math.round(ms / 1000)} s.`)
+    }
+    throw new Error('Brak połączenia z dostawcą AI. Sprawdź internet i spróbuj ponownie.')
+  }
 }
 
 /**
- * Generuje akordy dla podanego tekstu piosenki.
- * Obsługuje dwóch dostawców: OpenRouter oraz Google Gemini.
- * Wybór dostawcy i klucze pobierane są z ustawień (tabela settings).
+ * Generuje akordy dla podanego tekstu piosenki (OpenRouter lub Google Gemini — wg ustawień).
+ * Wynik jest czyszczony z otoczek Markdown.
  */
 export async function generateChords(req: ChordRequest): Promise<string> {
   const provider = getSetting('ai_provider') || 'openrouter'
   const prompt = buildPrompt(req)
-
-  if (provider === 'gemini') {
-    return callGemini(prompt)
-  }
-  return callOpenRouter(prompt)
+  const raw = provider === 'gemini' ? await callGemini(prompt) : await callOpenRouter(prompt)
+  const cleaned = cleanAiOutput(raw)
+  if (!cleaned) throw new Error('Dostawca AI zwrócił pustą odpowiedź.')
+  return cleaned
 }
 
-function buildPrompt(req: ChordRequest): string {
-  const langNote =
-    req.language === 'pl'
-      ? 'Odpowiadaj wyłącznie w języku polskim (poza symbolami akordów).'
-      : 'Respond only in English (apart from chord symbols).'
-
-  return [
-    'You are an expert musician and arranger.',
-    'Given the song lyrics below, produce a chord chart.',
-    'Rules:',
-    '- Place chord symbols in square brackets inline, immediately before the syllable where the chord changes, e.g. "[C]Hello [G]world".',
-    '- Keep the original lyric lines and their order.',
-    '- Use standard chord notation (C, Am, G7, Dm, F#m, etc.).',
-    '- If a key is provided, stay diatonic to that key where sensible.',
-    '- Do not add explanations, only return the annotated lyrics.',
-    langNote,
-    '',
-    `Title: ${req.title || '(unknown)'}`,
-    `Artist: ${req.artist || '(unknown)'}`,
-    `Key: ${req.key || '(not specified)'}`,
-    '',
-    'Lyrics:',
-    req.lyrics
-  ].join('\n')
+async function failure(provider: string, res: Response): Promise<Error> {
+  const text = await res.text().catch(() => '')
+  return new Error(`${provider} błąd ${res.status}: ${text.slice(0, 300)}`)
 }
 
 async function callOpenRouter(prompt: string): Promise<string> {
   const apiKey = getSetting('openrouter_api_key') || process.env.OPENROUTER_API_KEY || ''
-  if (!apiKey) {
-    throw new Error('Brak klucza API OpenRouter. Uzupełnij go w Ustawieniach.')
-  }
+  if (!apiKey) throw new Error('Brak klucza API OpenRouter. Uzupełnij go w Ustawieniach.')
   const model = getSetting('openrouter_model') || 'google/gemini-2.0-flash-exp:free'
+  if (!OPENROUTER_MODEL_RE.test(model)) throw new Error('Nieprawidłowy identyfikator modelu OpenRouter.')
 
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://songbook.studio',
-      'X-Title': 'Songbook Studio'
+  const res = await timedFetch(
+    'https://openrouter.ai/api/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+        'HTTP-Referer': APP_URL,
+        'X-Title': 'Songbook Studio'
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.4
+      })
     },
-    body: JSON.stringify({
-      model,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.4
-    })
-  })
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '')
-    throw new Error(`OpenRouter błąd ${res.status}: ${text.slice(0, 300)}`)
-  }
-  const data = (await res.json()) as {
-    choices?: { message?: { content?: string } }[]
-  }
-  const content = data.choices?.[0]?.message?.content?.trim()
-  if (!content) throw new Error('OpenRouter zwrócił pustą odpowiedź.')
-  return content
+    GENERATE_TIMEOUT_MS
+  )
+  if (!res.ok) throw await failure('OpenRouter', res)
+  const data = (await res.json()) as { choices?: { message?: { content?: string } }[] }
+  return data.choices?.[0]?.message?.content ?? ''
 }
 
 async function callGemini(prompt: string): Promise<string> {
   const apiKey = getSetting('gemini_api_key') || process.env.GEMINI_API_KEY || ''
-  if (!apiKey) {
-    throw new Error('Brak klucza API Gemini. Uzupełnij go w Ustawieniach.')
-  }
+  if (!apiKey) throw new Error('Brak klucza API Gemini. Uzupełnij go w Ustawieniach.')
   const model = getSetting('gemini_model') || 'gemini-2.0-flash'
+  if (!GEMINI_MODEL_RE.test(model)) throw new Error('Nieprawidłowy identyfikator modelu Gemini.')
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+  // Klucz w nagłówku, a nie w adresie URL — adresy trafiają do logów i komunikatów błędów.
+  const res = await timedFetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { temperature: 0.4 }
       })
-    }
+    },
+    GENERATE_TIMEOUT_MS
   )
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '')
-    throw new Error(`Gemini błąd ${res.status}: ${text.slice(0, 300)}`)
-  }
+  if (!res.ok) throw await failure('Gemini', res)
   const data = (await res.json()) as {
     candidates?: { content?: { parts?: { text?: string }[] } }[]
   }
-  const content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
-  if (!content) throw new Error('Gemini zwrócił pustą odpowiedź.')
-  return content
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 }
 
 export interface OpenRouterModel {
@@ -123,17 +105,11 @@ export interface OpenRouterModel {
 
 /**
  * Pobiera listę DARMOWYCH modeli z OpenRouter (cena promptu i odpowiedzi = 0).
- * Endpoint /models jest publiczny; klucz przekazujemy, jeśli jest dostępny.
+ * Endpoint /models jest publiczny, więc klucz użytkownika nie jest tu wysyłany.
  */
-export async function fetchOpenRouterFreeModels(apiKey?: string): Promise<OpenRouterModel[]> {
-  const key = apiKey || getSetting('openrouter_api_key') || process.env.OPENROUTER_API_KEY || ''
-  const res = await fetch('https://openrouter.ai/api/v1/models', {
-    headers: key ? { Authorization: `Bearer ${key}` } : {}
-  })
-  if (!res.ok) {
-    const text = await res.text().catch(() => '')
-    throw new Error(`OpenRouter błąd ${res.status}: ${text.slice(0, 200)}`)
-  }
+export async function fetchOpenRouterFreeModels(): Promise<OpenRouterModel[]> {
+  const res = await timedFetch('https://openrouter.ai/api/v1/models', {}, MODELS_TIMEOUT_MS)
+  if (!res.ok) throw await failure('OpenRouter', res)
   const data = (await res.json()) as {
     data?: {
       id: string
@@ -150,8 +126,7 @@ export async function fetchOpenRouterFreeModels(apiKey?: string): Promise<OpenRo
     .filter((m) => {
       const free = isZero(m.pricing?.prompt) && isZero(m.pricing?.completion)
       const outs = m.architecture?.output_modalities
-      const textOut = !outs || outs.includes('text') // pomiń modele audio/obraz
-      return free && textOut
+      return free && (!outs || outs.includes('text')) // pomiń modele audio/obraz
     })
     .map((m) => ({
       id: m.id,
