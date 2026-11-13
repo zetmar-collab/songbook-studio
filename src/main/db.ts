@@ -1,7 +1,7 @@
 // Powiązanie bazy z Electronem: lokalizacja plików, szyfrowanie kluczy API,
 // bezpieczne ścieżki nagrań, kopie zapasowe i przywracanie.
 import { app } from 'electron'
-import { basename, join, resolve, sep } from 'path'
+import { basename, isAbsolute, join, resolve, sep } from 'path'
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'fs'
 import { SongbookDb, swapDatabaseFile } from './database'
 import { decryptSecret, encryptSecret, isEncrypted, isSecret } from './secrets'
@@ -69,8 +69,10 @@ export function voiceFilePath(name: string): string {
 
 /** Katalog kopii: wybrany przez użytkownika (ustawienie `backup_dir`) lub domyślny. */
 export function backupsDir(): string {
-  const custom = getSetting('backup_dir')
-  return custom && custom.trim() ? custom : join(app.getPath('userData'), 'backups')
+  const custom = getSetting('backup_dir').trim()
+  // Ścieżki sieciowe (UNC) i urządzeń odrzucamy: zapis do nich mógłby wyciec dane lub poświadczenia NTLM.
+  if (custom && isAbsolute(custom) && !/^[\/]{2}/.test(custom)) return custom
+  return join(app.getPath('userData'), 'backups')
 }
 
 /** Automatyczna kopia samej bazy przy zamknięciu; zachowuje ostatnie `keep`. */
@@ -105,5 +107,7 @@ export function restoreDbFile(src: string): { songs: number } {
       initDb()
     }
   })
+  // Kopia pochodzi spoza aplikacji — nie przenosimy z niej ustawień o skutkach systemowych.
+  setSetting('backup_dir', '')
   return { songs: info.songs }
 }

@@ -26,6 +26,13 @@ const MAX_IMPORT_FILES = 200
 const REPORT_EMAIL = 'zetmar@gmail.com'
 const REPORT_CONTENT_LIMIT = 1200
 
+// Ścieżki plików zapisanych przez aplikację (eksport, kopie) — tylko je wolno pokazać w Eksploratorze.
+const writtenPaths = new Set<string>()
+const remember = (p: string): string => {
+  writtenPaths.add(p)
+  return p
+}
+
 const parent = (): BrowserWindow | undefined => BrowserWindow.getFocusedWindow() ?? undefined
 
 function showSave(options: Electron.SaveDialogOptions): Promise<Electron.SaveDialogReturnValue> {
@@ -172,7 +179,7 @@ export function registerIpc(): void {
     const res = await showSave({ defaultPath: `${base}.${fmt}`, filters: exportFilters(fmt) })
     if (res.canceled || !res.filePath) return { canceled: true }
     await exportSong(song, fmt, res.filePath, l)
-    return { canceled: false, filePath: res.filePath }
+    return { canceled: false, filePath: remember(res.filePath) }
   })
 
   ipcMain.handle('export:all', async (_e, format, lang) => {
@@ -185,7 +192,7 @@ export function registerIpc(): void {
     const res = await showSave({ defaultPath: `${title}-${stamp}.${fmt}`, filters: exportFilters(fmt) })
     if (res.canceled || !res.filePath) return { canceled: true }
     await exportCollection(songs, title, fmt, res.filePath, l)
-    return { canceled: false, filePath: res.filePath, count: songs.length }
+    return { canceled: false, filePath: remember(res.filePath), count: songs.length }
   })
 
   ipcMain.handle('export:setlist', async (_e, setlistId, format, lang) => {
@@ -213,12 +220,12 @@ export function registerIpc(): void {
     })
     if (res.canceled || !res.filePath) return { canceled: true }
     await exportCollection(songs, name, fmt, res.filePath, l)
-    return { canceled: false, filePath: res.filePath, count: songs.length }
+    return { canceled: false, filePath: remember(res.filePath), count: songs.length }
   })
 
   ipcMain.handle('shell:showItem', (_e, filePath) => {
     const p = asString(filePath, 1000, 'ścieżka')
-    if (isAbsolute(p) && existsSync(p)) shell.showItemInFolder(p)
+    if (writtenPaths.has(p) && isAbsolute(p) && existsSync(p)) shell.showItemInFolder(p)
   })
 
   // ----- Import plików (docx, txt, ChordPro) -----
@@ -256,7 +263,7 @@ export function registerIpc(): void {
     })
     if (res.canceled || !res.filePath) return { canceled: true }
     const summary = await createFullBackup(res.filePath)
-    return { canceled: false, filePath: res.filePath, ...summary }
+    return { canceled: false, filePath: remember(res.filePath), ...summary }
   })
 
   ipcMain.handle('backup:restore', async () => {
@@ -277,6 +284,9 @@ export function registerIpc(): void {
   ipcMain.handle('backup:chooseDir', async () => {
     const res = await showOpen({ properties: ['openDirectory', 'createDirectory'] })
     if (res.canceled || res.filePaths.length === 0) return { canceled: true }
+    if (/^[\/]{2}/.test(res.filePaths[0])) {
+      throw new Error('Foldery sieciowe (UNC) nie są obsługiwane. Wybierz folder lokalny lub zmapowany dysk.')
+    }
     setSetting('backup_dir', res.filePaths[0])
     return { canceled: false, dir: res.filePaths[0] }
   })
